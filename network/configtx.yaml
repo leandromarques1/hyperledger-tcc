@@ -1,6 +1,6 @@
 ################################################################################
 #
-# SEÇÃO: Organizações
+# SEÇÃO: Organizations
 #   --> Esta seção define as diferentes identidades organizacionais 
 #     que serão referenciadas posteriormente na configuração.
 #
@@ -57,3 +57,133 @@ Organizations:
         AnchorPeers:
             - Host: peer0.vendedor.sampledomain.com
               Port: 7051
+
+################################################################################
+#
+#   SEÇÃO: Capabilities
+#
+# - Esta seção define os recursos da rede do Fabric. Este é um conceito novo a 
+#   partir da v1.1.0 e não deve ser utilizado em redes mistas com peers e solicitantes 
+#   da v1.0.x. Os recursos definem recursos que devem estar presentes em um binário de 
+#   Fabric para que esse binário participe com segurança da rede de Fabric. Por exemplo, 
+#   se um novo tipo de MSP for adicionado, os binários mais recentes poderão reconhecer 
+#   e validar as assinaturas desse tipo, enquanto os binários mais antigos sem esse 
+#   suporte não poderão validar essas transações. Isso pode levar a diferentes versões 
+#   dos binários de Fabric com diferentes estados de mundo. Em vez disso, definir um recurso 
+#   para um canal informa aos binários sem esse recurso que eles devem interromper o 
+#   processamento de transações até que sejam atualizados. Para v1.0.x, se algum recurso 
+#   for definido (incluindo um mapa com todos os recursos desativados), o par v1.0.x 
+#   travará deliberadamente.
+#
+################################################################################
+Capabilities:    
+    Global: &ChannelCapabilities        
+        V1_1: true
+    
+    Orderer: &OrdererCapabilities        
+        V1_1: true
+    
+    Application: &ApplicationCapabilities        
+        V1_2: true
+
+################################################################################
+#
+#   SECTION: Application
+#     --> Esta seção define os valores a serem codificados em uma transação de 
+#         configuração ou bloco genesis para parâmetros relacionados ao aplicativo
+#
+################################################################################
+Application: &ApplicationDefaults
+
+    # Organizações é a lista de organizações que são definidas como participantes 
+    # no lado do aplicativo da rede
+    Organizations:
+
+################################################################################
+#
+#   SECTION: Orderer
+#     -->  Esta seção define os valores a serem codificados em uma transação de 
+#         configuração ou bloco de genesis para parâmetros relacionados ao pedido
+#
+################################################################################
+Orderer: &OrdererDefaults
+
+    # Orderer Type: a implementação do ordenador para iniciar
+    # Os tipos disponíveis são "solo" e "kafka"
+    OrdererType: solo
+
+    Addresses:
+        - orderer.sampledomain.com:7050
+
+    # Batch Timeout: tempo de espera antes de criar um lote
+    BatchTimeout: 2s
+
+    # Batch Size: controla o número de mensagens agrupadas em um bloco
+    BatchSize:
+
+        # Max Message Count: nº máximo de mensagens permitidas em um lote
+        MaxMessageCount: 10
+
+        # Absolute Max Bytes: 
+        #   --> O número máximo absoluto de bytes permitido 
+        #       para as mensagens serializadas em um lote
+        AbsoluteMaxBytes: 99 MB
+
+        # PreferredMaxBytes:
+        #   --> número máximo preferido de bytes permitidos 
+        #       para as mensagens serializadas em um lote. 
+        #   --> Uma mensagem maior que os bytes máximos 
+        #       preferidos resultará em um lote maior que 
+        #       os bytes máximos preferidos.
+        PreferredMaxBytes: 512 KB
+
+    Kafka:
+        # Brokers: uma lista de corretores Kafka aos quais o solicitante se conecta
+        # NOTE: Usar a notação IP:port
+        Brokers:
+            - 127.0.0.1:9092
+
+    # Organizations:
+    #   --> lista de organizações que são definidas como participantes 
+    #       no lado do ordenador da rede
+    Organizations:
+
+################################################################################
+#
+#   Profile
+#     --> Diferentes perfis de configuração podem ser codificados aqui para  
+#         serem especificados como parâmetros para a ferramenta "configtxgen"
+#
+################################################################################
+#
+#   Profile
+#
+#   - Different configuration profiles may be encoded here to be specified
+#   as parameters to the configtxgen tool
+#
+################################################################################
+Profiles:
+
+    OrgsOrdererGenesis:
+        Capabilities:
+            <<: *ChannelCapabilities
+        Orderer:
+            <<: *OrdererDefaults
+            Organizations:
+                - *OrdererOrg
+            Capabilities:
+                <<: *OrdererCapabilities
+        Consortiums:
+            SampleConsortium:
+                Organizations:
+                    - *Produtor
+                    - *Transportador
+                    - *Vendedor
+    OrgsChannel:
+        Consortium: SampleConsortium
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *Produtor
+                - *Transportador
+                - *Vendedor
