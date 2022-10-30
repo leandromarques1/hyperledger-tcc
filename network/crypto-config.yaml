@@ -1,0 +1,58 @@
+# ARQUIVO crypto-config.yaml
+# --> contém a definição da topologia de Rede
+# --> permite gerar conjunto de CERTIFICADOS e CHAVES
+#     para as organizações e seus participantes
+
+# ---------------------------------------------------------------------------
+# "OrdererOrgs" - Definição de organizações que gerenciam nós de pedidos 
+# ---------------------------------------------------------------------------
+OrdererOrgs:
+  # Orderer
+  - Name: Orderer
+    Domain: sampledomain.com  #domínio da Rede
+    Specs:    
+      # "Specs":  é uma matriz de entradas Spec. 
+      # Cada entrada Spec consiste em dois campos:
+      #     --> Hostname: (Obrigatório) O hostname desejado, sem o domínio.
+      #     --> CommonName (CN): (Opcional) Especifica o modelo ou substituição explícita para o CN. 
+      # Por padrão, este é o modelo:
+      #      "{{.Hostname}}.{{.Domain}}"
+      # que obtém seus valores de Spec.Hostname e Org.Domain, respectivamente.
+      - Hostname: orderer
+
+# ---------------------------------------------------------------------------
+# "PeerOrgs" - Definição de organizações que gerenciam peer nodes
+# ---------------------------------------------------------------------------
+PeerOrgs:
+  #====== Produtor ======#
+  - Name: Produtor
+    Domain: produtor.sampledomain.com
+    EnableNodeOUs: true
+    
+    #Template: permite a definição de 1 ou mais hosts que são criados sequencialmente a partir de um template. 
+    Template:   
+      Count: 2  #nº de nós
+
+    #Users: usuários 
+    Users:
+      Count: 1  #nº de contas de usuário além de Admin
+
+  #====== Transportador ======#
+  - Name: Transportador
+    Domain: transportador.sampledomain.com
+    EnableNodeOUs: true
+    Template:
+      Count: 2
+    Users:
+      Count: 1
+
+  #====== Vendedor ======#
+  - Name: Vendedor
+    Domain: vendedor.sampledomain.com
+    EnableNodeOUs: true
+    Template:
+      Count: 2
+    Users:
+      Count: 1
+  # ---------------------------------------------------------------------------
+  
