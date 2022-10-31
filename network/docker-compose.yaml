@@ -1,0 +1,268 @@
+#versão do Docker-Compopse que está sendo utilizada
+version:  '2'
+
+#Volume: cria uma cópia dos dados que estão no container para a nossa máquina (repositório local)
+volumes:
+  orderer.sampledomain.com:
+  peer0.produtor.sampledomain.com:
+  peer1.produtor.sampledomain.com:
+  peer0.transportador.sampledomain.com:
+  peer1.transportador.sampledomain.com:
+  peer0.vendedor.sampledomain.com:
+  peer1.vendedor.sampledomain.com:
+
+#
+networks:
+  sampleNetwork:
+
+#SERVICES: informar quais containers serão criados
+#ou seja, quais serão os serviços (services) que o Compose vai subir
+services:
+  orderer.sampledomain.com:   #nome do Serviço
+    container_name: orderer.sampledomain.com    #nome do container
+    image: hyperledger/fabric-orderer:latest    #imagem que será usada como referência p/ a criação do container 
+    environment:     #variáveis de ambiente
+      - FABRIC_LOGGING_SPEC=INFO
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block
+      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      # enabled TLS
+      - ORDERER_GENERAL_TLS_ENABLED=false
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=/var/hyperledger/orderer/tls/ca.crt
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric    #isso aqui pode me dar dor de cabeça!
+    command: orderer
+    volumes:
+      - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+      - ./crypto-config/ordererOrganizations/sampledomain.com/orderers/orderer.sampledomain.com/msp:/var/hyperledger/orderer/msp
+      - ./crypto-config/ordererOrganizations/sampledomain.com/orderers/orderer.sampledomain.com/tls/:/var/hyperledger/orderer/tls
+      - orderer.sampledomain.com:/var/hyperledger/production/orderer
+    
+    ports:  
+      - 7050:7050    #portas que o container irá usar (no esquema: {host_port}:{container_port})
+    
+    networks:
+      - sampleNetwork   #rede pela qual serão feitas as comunicações
+
+  peer0.produtor.sampledomain.com:
+    container_name: peer0.produtor.sampledomain.com
+    image: hyperledger/fabric-peer:latest
+    environment:
+      - CORE_PEER_ID=peer0.produtor.sampledomain.com
+      - CORE_PEER_ADDRESS=peer0.produtor.sampledomain.com:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.produtor.sampledomain.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.produtor.sampledomain.com:7051
+      - CORE_PEER_LOCALMSPID=ProdutorMSP
+    
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer    
+    command: peer node start
+    # command: peer node start --peer-chaincodedev=true
+
+    volumes:
+        - /var/run/:/host/var/run/        
+        - ./crypto-config/peerOrganizations/produtor.sampledomain.com/peers/peer0.produtor.sampledomain.com/msp:/etc/hyperledger/fabric/msp
+        - ./crypto-config/peerOrganizations/produtor.sampledomain.com/peers/peer0.produtor.sampledomain.com/tls:/etc/hyperledger/fabric/tls
+        - peer0.produtor.sampledomain.com:/var/hyperledger/production
+    
+    ports:
+      - 7051:7051
+      - 7052:7052
+      - 7053:7053
+    networks:
+      - sampleNetwork
+
+    #extends:
+    #  file: peer-base.yaml
+    #  service: peer-base
+    
+    
+  peer1.produtor.sampledomain.com:
+    container_name: peer1.produtor.sampledomain.com
+    image: hyperledger/fabric-peer:latest
+    environment:
+      - CORE_PEER_ID=peer1.produtor.sampledomain.com
+      - CORE_PEER_ADDRESS=peer1.produtor.sampledomain.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.produtor.sampledomain.com:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.produtor.sampledomain.com:7051
+      - CORE_PEER_LOCALMSPID=ProdutorMSP
+    
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer    
+    command: peer node start
+    # command: peer node start --peer-chaincodedev=true
+    
+    volumes:
+        - /var/run/:/host/var/run/        
+        - ./crypto-config/peerOrganizations/produtor.sampledomain.com/peers/peer1.produtor.sampledomain.com/msp:/etc/hyperledger/fabric/msp
+        - ./crypto-config/peerOrganizations/produtor.sampledomain.com/peers/peer1.produtor.sampledomain.com/tls:/etc/hyperledger/fabric/tls
+        - peer1.produtor.sampledomain.com:/var/hyperledger/production
+    ports:
+      - 8051:7051
+      - 8052:7052
+      - 8053:7053
+    networks:
+      - sampleNetwork
+    
+    #extends:
+    #  file: peer-base.yaml
+    #  service: peer-base
+    
+  peer0.transportador.sampledomain.com:
+    container_name: peer0.transportador.sampledomain.com
+    image: hyperledger/fabric-peer:latest
+    environment:
+      - CORE_PEER_ID=peer0.transportador.sampledomain.com
+      - CORE_PEER_ADDRESS=peer0.transportador.sampledomain.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.transportador.sampledomain.com:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.transportador.sampledomain.com:7051
+      - CORE_PEER_LOCALMSPID=TransportadorMSP
+    
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer    
+    command: peer node start
+    # command: peer node start --peer-chaincodedev=true
+    
+    volumes:
+        - /var/run/:/host/var/run/        
+        - ./crypto-config/peerOrganizations/transportador.sampledomain.com/peers/peer0.transportador.sampledomain.com/msp:/etc/hyperledger/fabric/msp
+        - ./crypto-config/peerOrganizations/transportador.sampledomain.com/peers/peer0.transportador.sampledomain.com/tls:/etc/hyperledger/fabric/tls
+        - peer0.transportador.sampledomain.com:/var/hyperledger/production
+    ports:
+      - 9051:7051
+      - 9052:7052
+      - 9053:7053
+    networks:
+      - sampleNetwork
+
+    #extends:
+    #  file: peer-base.yaml
+    #  service: peer-base
+    
+  peer1.transportador.sampledomain.com:
+    container_name: peer1.transportador.sampledomain.com
+    image: hyperledger/fabric-peer:latest
+    environment:
+      - CORE_PEER_ID=peer1.transportador.sampledomain.com
+      - CORE_PEER_ADDRESS=peer1.transportador.sampledomain.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.transportador.sampledomain.com:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.transportador.sampledomain.com:7051
+      - CORE_PEER_LOCALMSPID=TransportadorMSP
+    
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer    
+    command: peer node start
+    # command: peer node start --peer-chaincodedev=true
+    
+    volumes:
+        - /var/run/:/host/var/run/        
+        - ./crypto-config/peerOrganizations/transportador.sampledomain.com/peers/peer1.transportador.sampledomain.com/msp:/etc/hyperledger/fabric/msp
+        - ./crypto-config/peerOrganizations/transportador.sampledomain.com/peers/peer1.transportador.sampledomain.com/tls:/etc/hyperledger/fabric/tls
+        - peer1.transportador.sampledomain.com:/var/hyperledger/production
+    networks:
+      - sampleNetwork
+        
+    ports:
+      - 10051:7051
+      - 10052:7052
+      - 10053:7053
+    
+    #extends:
+    #  file: peer-base.yaml
+    #  service: peer-base
+    
+  peer0.vendedor.sampledomain.com:
+    container_name: peer0.vendedor.sampledomain.com
+    image: hyperledger/fabric-peer:latest
+    environment:
+      - CORE_PEER_ID=peer0.vendedor.sampledomain.com
+      - CORE_PEER_ADDRESS=peer0.vendedor.sampledomain.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.vendedor.sampledomain.com:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.vendedor.sampledomain.com:7051
+      - CORE_PEER_LOCALMSPID=VendedorMSP
+    
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer    
+    command: peer node start
+    # command: peer node start --peer-chaincodedev=true
+    
+    volumes:
+        - /var/run/:/host/var/run/        
+        - ./crypto-config/peerOrganizations/vendedor.sampledomain.com/peers/peer0.vendedor.sampledomain.com/msp:/etc/hyperledger/fabric/msp
+        - ./crypto-config/peerOrganizations/vendedor.sampledomain.com/peers/peer0.vendedor.sampledomain.com/tls:/etc/hyperledger/fabric/tls
+        - peer0.vendedor.sampledomain.com:/var/hyperledger/production
+    ports:
+      - 9051:7051
+      - 9052:7052
+      - 9053:7053
+    networks:
+      - sampleNetwork
+
+    #extends:
+    #  file: peer-base.yaml
+    #  service: peer-base
+    
+  peer1.vendedor.sampledomain.com:
+    container_name: peer1.vendedor.sampledomain.com
+    environment:
+      - CORE_PEER_ID=peer1.vendedor.sampledomain.com
+      - CORE_PEER_ADDRESS=peer1.vendedor.sampledomain.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.vendedor.sampledomain.com:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.vendedor.sampledomain.com:7051
+      - CORE_PEER_LOCALMSPID=VendedorMSP
+    
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer    
+    command: peer node start
+    # command: peer node start --peer-chaincodedev=true
+    
+    volumes:
+        - /var/run/:/host/var/run/        
+        - ./crypto-config/peerOrganizations/vendedor.sampledomain.com/peers/peer1.vendedor.sampledomain.com/msp:/etc/hyperledger/fabric/msp
+        - ./crypto-config/peerOrganizations/consvendedorumer.sampledomain.com/peers/peer1.vendedor.sampledomain.com/tls:/etc/hyperledger/fabric/tls
+        - peer1.vendedor.sampledomain.com:/var/hyperledger/production
+    networks:
+      - sampleNetwork
+        
+    ports:
+      - 10051:7051
+      - 10052:7052
+      - 10053:7053
+
+    #extends:
+    #  file: peer-base.yaml
+    #  service: peer-base
+    
+  cli:      #CLI: container que permite acessar cada nó participante da rede
+    container_name: cli
+    image: hyperledger/fabric-tools:latest
+    tty: true
+    stdin_open: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=INFO
+      #- CORE_LOGGING_LEVEL=DEBUG
+      - CORE_PEER_ID=cli
+      - CORE_PEER_ADDRESS=peer0.produtor.sampledomain.com:7051
+      - CORE_PEER_LOCALMSPID=ProdutorMSP
+      - CORE_PEER_TLS_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto-config/peerOrganizations/produtor.sampledomain.com/peers/peer0.produtor.sampledomain.com/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto-config/peerOrganizations/produtor.sampledomain.com/peers/peer0.produtor.sampledomain.com/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto-config/peerOrganizations/produtor.sampledomain.com/peers/peer0.produtor.sampledomain.com/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto-config/peerOrganizations/produtor.sampledomain.com/users/Admin@produtor.sampledomain.com/msp
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash
+    volumes:
+        - /var/run/:/host/var/run/        
+        - ../chaincode/:/opt/gopath/src/github.com/chaincode
+        - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto-config/        
+        - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts/
+    depends_on:
+      - orderer.sampledomain.com
+      - peer0.produtor.sampledomain.com
+      - peer1.produtor.sampledomain.com
+      - peer0.transportador.sampledomain.com
+      - peer1.transportador.sampledomain.com
+      - peer0.vendedor.sampledomain.com
+      - peer1.vendedor.sampledomain.com
+
+    networks:
+      - sampleNetwork
