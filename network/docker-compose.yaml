@@ -21,6 +21,7 @@ volumes:
   ca.sampledomain.com:
   orderer.sampledomain.com:
   peer0.produtor.sampledomain.com:
+  peer1.produtor.sampledomain.com:
 
 services:
   ca.sampledomain.com:
@@ -30,7 +31,8 @@ services:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_NAME=ca.sampledomain.com
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.produtor.sampledomain.com-cert.pem
-      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/649cf9c74d5400a7a605e2366fe15354fc7d4f51b4ded69ecd958c72bb70f5a2_sk
+      #- FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/649cf9c74d5400a7a605e2366fe15354fc7d4f51b4ded69ecd958c72bb70f5a2_sk
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/56114fbc4ae1a114aab3022af935b6fef4703cf59405a8f2eff525dd19ca62a8_sk
     ports:
       - "7054:7054"
     command: sh -c 'fabric-ca-server start -b admin:adminpw'
@@ -88,6 +90,34 @@ services:
     networks:
       - sampleNetwork
 
+  peer1.produtor.sampledomain.com:
+    container_name: peer1.produtor.sampledomain.com
+    image: hyperledger/fabric-peer
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_PEER_ID=peer1.produtor.sampledomain.com
+      - CORE_LOGGING_PEER=info
+      - CORE_CHAINCODE_LOGGING=debug
+      - CORE_PEER_LOCALMSPID=ProdutorMSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
+      - CORE_PEER_ADDRESS=peer1.produtor.sampledomain.com:7051
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=network_sampleNetwork
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: peer node start
+    ports:
+      - 8051:7051
+      - 8053:7053
+    volumes:
+      - /var/run/:/host/var/run/
+      - ./crypto-config/peerOrganizations/produtor.sampledomain.com/peers/peer1.produtor.sampledomain.com/msp:/etc/hyperledger/msp/peer
+      - ./crypto-config/peerOrganizations/produtor.sampledomain.com/users:/etc/hyperledger/msp/users
+      - ./channel-artifacts:/etc/hyperledger/configtx
+    depends_on:
+      - orderer.sampledomain.com
+    networks:
+      - sampleNetwork
+
+  
   cli:
     container_name: cli
     image: hyperledger/fabric-tools

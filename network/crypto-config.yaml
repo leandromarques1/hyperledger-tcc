@@ -21,7 +21,7 @@
     # Orderer
     # ---------------------------------------------------------------------------
     - Name: Orderer
-      Domain: sampledomain.co    
+      Domain: sampledomain.com    
   
       # ---------------------------------------------------------------------------
       # "Specs" - See PeerOrgs below for complete description
@@ -37,7 +37,7 @@
     # Produtor
     # ---------------------------------------------------------------------------
     - Name: Produtor
-      Domain: produtor.sampledomain.co
+      Domain: produtor.sampledomain.com
       
       # ---------------------------------------------------------------------------
       # "Specs"
@@ -74,7 +74,7 @@
       # name collisions
       # ---------------------------------------------------------------------------
       Template:
-        Count: 1
+        Count: 2
         # Start: 5
         # Hostname: {{.Prefix}}{{.Index}} # default
       
