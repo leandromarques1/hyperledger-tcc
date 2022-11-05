@@ -74,6 +74,10 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
       - CORE_PEER_ADDRESS=peer0.produtor.sampledomain.com:7051
       - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=network_sampleNetwork
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.peer0.produtor.sampledomain.com:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=peer0.produtor
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=password
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric
     command: peer node start
     # command: peer node start --peer-chaincodedev=true
@@ -102,6 +106,10 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
       - CORE_PEER_ADDRESS=peer1.produtor.sampledomain.com:7051
       - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=network_sampleNetwork
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.peer1.produtor.sampledomain.com:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=peer1.produtor
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=password
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric
     command: peer node start
     ports:
@@ -117,7 +125,28 @@ services:
     networks:
       - sampleNetwork
 
-  
+  couchdb.peer0.produtor.sampledomain.com:
+    container_name: couchdb.peer0.produtor.sampledomain.com
+    environment:
+      - COUCHDB_USER=peer0.produtor
+      - COUCHDB_PASSWORD=password
+    image: hyperledger/fabric-couchdb
+    ports: 
+      - 5984:5984
+    networks: 
+      - sampleNetwork
+
+  couchdb.peer1.produtor.sampledomain.com:
+    container_name: couchdb.peer1.produtor.sampledomain.com
+    environment:
+      - COUCHDB_USER=peer1.produtor
+      - COUCHDB_PASSWORD=password
+    image: hyperledger/fabric-couchdb
+    ports: 
+      - 6984:5984
+    networks: 
+      - sampleNetwork
+ 
   cli:
     container_name: cli
     image: hyperledger/fabric-tools
