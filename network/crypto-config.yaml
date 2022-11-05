@@ -1,60 +1,87 @@
-# ARQUIVO crypto-config.yaml
-# --> contém a definição da topologia de Rede
-# --> permite gerar conjunto de CERTIFICADOS e CHAVES
-#     para as organizações e seus participantes
+# Copyright 2018 Sample Domain All Rights Reserved
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# 
 
 # ---------------------------------------------------------------------------
-# "OrdererOrgs" - Definição de organizações que gerenciam nós de pedidos 
+# "OrdererOrgs" - Definition of organizations managing orderer nodes
 # ---------------------------------------------------------------------------
-OrdererOrgs:
-  # Orderer
-  - Name: Orderer
-    Domain: sampledomain.com  #domínio da Rede
-    Specs:    
-      # "Specs":  é uma matriz de entradas Spec. 
-      # Cada entrada Spec consiste em dois campos:
-      #     --> Hostname: (Obrigatório) O hostname desejado, sem o domínio.
-      #     --> CommonName (CN): (Opcional) Especifica o modelo ou substituição explícita para o CN. 
-      # Por padrão, este é o modelo:
-      #      "{{.Hostname}}.{{.Domain}}"
-      # que obtém seus valores de Spec.Hostname e Org.Domain, respectivamente.
-      - Hostname: orderer
-
-# ---------------------------------------------------------------------------
-# "PeerOrgs" - Definição de organizações que gerenciam peer nodes
-# ---------------------------------------------------------------------------
-PeerOrgs:
-  #====== Produtor ======#
-  - Name: Produtor
-    Domain: produtor.sampledomain.com
-    EnableNodeOUs: true
-    
-    #Template: permite a definição de 1 ou mais hosts que são criados sequencialmente a partir de um template. 
-    Template:   
-      Count: 1  #nº de nós
-      # Start: 5
-      # Hostname: {{.Prefix}}{{.Index}} # default
-
-    #Users: usuários 
-    Users:
-      Count: 1  #nº de contas de usuário além de Admin
-
-  ##====== Transportador ======#
-  #- Name: Transportador
-  #  Domain: transportador.sampledomain.com
-  #  EnableNodeOUs: true
-  #  Template:
-  #    Count: 1
-  #  Users:
-  #    Count: 1
-
-  ##====== Vendedor ======#
-  #- Name: Vendedor
-  #  Domain: vendedor.sampledomain.com
-  #  EnableNodeOUs: true
-  #  Template:
-  #    Count: 1
-  #  Users:
-  #    Count: 1
-  ## ---------------------------------------------------------------------------
-  #
+  OrdererOrgs:
+    # ---------------------------------------------------------------------------
+    # Orderer
+    # ---------------------------------------------------------------------------
+    - Name: Orderer
+      Domain: sampledomain.co    
+  
+      # ---------------------------------------------------------------------------
+      # "Specs" - See PeerOrgs below for complete description
+      # ---------------------------------------------------------------------------
+      Specs:
+        - Hostname: orderer
+  
+  # ---------------------------------------------------------------------------
+  # "PeerOrgs" - Definition of organizations managing peer nodes
+  # ---------------------------------------------------------------------------
+  PeerOrgs:
+    # ---------------------------------------------------------------------------
+    # Produtor
+    # ---------------------------------------------------------------------------
+    - Name: Produtor
+      Domain: produtor.sampledomain.co
+      
+      # ---------------------------------------------------------------------------
+      # "Specs"
+      # ---------------------------------------------------------------------------
+      # Uncomment this section to enable the explicit definition of hosts in your
+      # configuration.  Most users will want to use Template, below
+      #
+      # Specs is an array of Spec entries.  Each Spec entry consists of two fields:
+      #   - Hostname:   (Required) The desired hostname, sans the domain.
+      #   - CommonName: (Optional) Specifies the template or explicit override for
+      #                 the CN.  By default, this is the template:
+      #
+      #                              "{{.Hostname}}.{{.Domain}}"
+      #
+      #                 which obtains its values from the Spec.Hostname and
+      #                 Org.Domain, respectively.
+      # ---------------------------------------------------------------------------
+      # Specs:
+      #   - Hostname: foo # implicitly "foo.produtor.example.com"
+      #     CommonName: foo27.org5.example.com # overrides Hostname-based FQDN set above
+      #   - Hostname: bar
+      #   - Hostname: baz
+      
+      # ---------------------------------------------------------------------------
+      # "Template"
+      # ---------------------------------------------------------------------------
+      # Allows for the definition of 1 or more hosts that are created sequentially
+      # from a template. By default, this looks like "peer%d" from 0 to Count-1.
+      # You may override the number of nodes (Count), the starting index (Start)
+      # or the template used to construct the name (Hostname).
+      #
+      # Note: Template and Specs are not mutually exclusive.  You may define both
+      # sections and the aggregate nodes will be created for you.  Take care with
+      # name collisions
+      # ---------------------------------------------------------------------------
+      Template:
+        Count: 1
+        # Start: 5
+        # Hostname: {{.Prefix}}{{.Index}} # default
+      
+      # ---------------------------------------------------------------------------
+      # "Users"
+      # ---------------------------------------------------------------------------
+      # Count: The number of user accounts _in addition_ to Admin
+      # ---------------------------------------------------------------------------
+      Users:
+        Count: 1

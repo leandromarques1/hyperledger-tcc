@@ -1,185 +1,137 @@
-################################################################################
+# Copyright 2018 Villa Labs All Rights Reserved
 #
-# SEÇÃO: Organizations
-#   --> Esta seção define as diferentes identidades organizacionais 
-#     que serão referenciadas posteriormente na configuração.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-# ARQUIVO configtxgen contém as configurações:
-#   --> do nó ordenador (OrdererOrg); 
-#   --> das organizações participantes (Produtor, Transportador e Consumidor);
-#   --> dos peers âncora (anchor peer) de cada organização
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
-# ANCHOR PEER
-#   --> é a porta de entrada (ou saída) para comunicação de
-#       uma organização com os demais participantes da Rede
-#       (Protocolo GOSSIP)
-#   --> cada organização precisa ter PELO MENOS um anchor peer
-#
-################################################################################
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# 
 
+################################################################################
+#
+#   Section: Organizations
+#
+#   - This section defines the different organizational identities which will
+#   be referenced later in the configuration.
+#
+################################################################################
 Organizations:
-    
-    # SampleOrg define um MSP usando o arquivo "sampleconfig". 
-    # Nunca deve ser usado em produção, mas pode ser usado como modelo para outras definições
-
-    - &OrdererOrg 
-        #   DefaultOrg define a organização que é usada no sampleconfig 
-        #   do ambiente de desenvolvimento fabric.git
+   
+    - &OrdererOrg
+        # DefaultOrg defines the organization which is used in the sampleconfig
+        # of the fabric.git development environment    
         Name: OrdererOrg
 
-        # ID para carregar a definição do MSP como
+        # ID to load the MSP definition as
         ID: OrdererMSP
-        
-        # MSPDir: é o caminho do sistema de arquivos (filesystem path) que contém a configuração do MSP
+
+        # MSPDir is the filesystem path which contains the MSP configuration
         MSPDir: crypto-config/ordererOrganizations/sampledomain.com/msp
 
-    - &Produtor 
+    - &Produtor
+        # DefaultOrg defines the organization which is used in the sampleconfig
+        # of the fabric.git development environment 
         Name: ProdutorMSP
+
+        # ID to load the MSP definition as
         ID: ProdutorMSP
+
         MSPDir: crypto-config/peerOrganizations/produtor.sampledomain.com/msp
+        
         AnchorPeers:
-            # --> define a localização dos peers que podem ser usados 
-            #     para comunicação entre organizações (Protocolo Gossip). 
-            # --> esse valor é codificado apenas no bloco genesis no  
-            #     contexto da seção Application
+            # AnchorPeers defines the location of peers which can be used
+            # for cross org gossip communication.  Note, this value is only
+            # encoded in the genesis block in the Application section context
             - Host: peer0.produtor.sampledomain.com
               Port: 7051
-            
-    #- &Transportador
-    #    Name: TransportadorMSP
-    #    ID: TransportadorMSP
-    #    MSPDir: crypto-config/peerOrganizations/transportador.sampledomain.com/msp
-    #    AnchorPeers:
-    #        - Host: peer0.transportador.sampledomain.com
-    #          Port: 7051
-    #
-    #- &Vendedor
-    #    Name: VendedorMSP
-    #    ID: VendedorMSP
-    #    MSPDir: crypto-config/peerOrganizations/vendedor.sampledomain.com/msp
-    #    AnchorPeers:
-    #        - Host: peer0.vendedor.sampledomain.com
-    #          Port: 7051
-
-################################################################################
-#
-#   SEÇÃO: Capabilities
-#
-# - Esta seção define os recursos da rede do Fabric. Este é um conceito novo a 
-#   partir da v1.1.0 e não deve ser utilizado em redes mistas com peers e solicitantes 
-#   da v1.0.x. Os recursos definem recursos que devem estar presentes em um binário de 
-#   Fabric para que esse binário participe com segurança da rede de Fabric. Por exemplo, 
-#   se um novo tipo de MSP for adicionado, os binários mais recentes poderão reconhecer 
-#   e validar as assinaturas desse tipo, enquanto os binários mais antigos sem esse 
-#   suporte não poderão validar essas transações. Isso pode levar a diferentes versões 
-#   dos binários de Fabric com diferentes estados de mundo. Em vez disso, definir um recurso 
-#   para um canal informa aos binários sem esse recurso que eles devem interromper o 
-#   processamento de transações até que sejam atualizados. Para v1.0.x, se algum recurso 
-#   for definido (incluindo um mapa com todos os recursos desativados), o par v1.0.x 
-#   travará deliberadamente.
-#
-################################################################################
-#Capabilities:    
-#    Global: &ChannelCapabilities        
-#        V1_1: true
-#    
-#    Orderer: &OrdererCapabilities        
-#        V1_1: true
-#    
-#    Application: &ApplicationCapabilities        
-#        V1_2: true
 
 ################################################################################
 #
 #   SECTION: Application
-#     --> Esta seção define os valores a serem codificados em uma transação de 
-#         configuração ou bloco genesis para parâmetros relacionados ao aplicativo
+#
+#   - This section defines the values to encode into a config transaction or
+#   genesis block for application related parameters
 #
 ################################################################################
 Application: &ApplicationDefaults
 
-    # Organizações é a lista de organizações que são definidas como participantes 
-    # no lado do aplicativo da rede
+    # Organizations is the list of orgs which are defined as participants on
+    # the application side of the network
     Organizations:
 
 ################################################################################
 #
 #   SECTION: Orderer
-#     -->  Esta seção define os valores a serem codificados em uma transação de 
-#         configuração ou bloco de genesis para parâmetros relacionados ao pedido
+#
+#   - This section defines the values to encode into a config transaction or
+#   genesis block for orderer related parameters
 #
 ################################################################################
 Orderer: &OrdererDefaults
 
-    # Orderer Type: a implementação do ordenador para iniciar
-    # Os tipos disponíveis são "solo" e "kafka"
+    # Orderer Type: The orderer implementation to start
+    # Available types are "solo" and "kafka"
     OrdererType: solo
 
     Addresses:
         - orderer.sampledomain.com:7050
 
-    # Batch Timeout: tempo de espera antes de criar um lote
+    # Batch Timeout: The amount of time to wait before creating a batch
     BatchTimeout: 2s
 
-    # Batch Size: controla o número de mensagens agrupadas em um bloco
+    # Batch Size: Controls the number of messages batched into a block
     BatchSize:
 
-        # Max Message Count: nº máximo de mensagens permitidas em um lote
+        # Max Message Count: The maximum number of messages to permit in a batch
         MaxMessageCount: 10
 
-        # Absolute Max Bytes: 
-        #   --> O número máximo absoluto de bytes permitido 
-        #       para as mensagens serializadas em um lote
+        # Absolute Max Bytes: The absolute maximum number of bytes allowed for
+        # the serialized messages in a batch.
         AbsoluteMaxBytes: 99 MB
 
-        # PreferredMaxBytes:
-        #   --> número máximo preferido de bytes permitidos 
-        #       para as mensagens serializadas em um lote. 
-        #   --> Uma mensagem maior que os bytes máximos 
-        #       preferidos resultará em um lote maior que 
-        #       os bytes máximos preferidos.
+        # Preferred Max Bytes: The preferred maximum number of bytes allowed for
+        # the serialized messages in a batch. A message larger than the preferred
+        # max bytes will result in a batch larger than preferred max bytes.
         PreferredMaxBytes: 512 KB
 
     Kafka:
-        # Brokers: uma lista de corretores Kafka aos quais o solicitante se conecta
-        # NOTE: Usar a notação IP:port
+        # Brokers: A list of Kafka brokers to which the orderer connects
+        # NOTE: Use IP:port notation
         Brokers:
             - 127.0.0.1:9092
 
-    # Organizations:
-    #   --> lista de organizações que são definidas como participantes 
-    #       no lado do ordenador da rede
+    # Organizations is the list of orgs which are defined as participants on
+    # the orderer side of the network
     Organizations:
 
 ################################################################################
 #
 #   Profile
-#     --> Diferentes perfis de configuração podem ser codificados aqui para  
-#         serem especificados como parâmetros para a ferramenta "configtxgen"
+#
+#   - Different configuration profiles may be encoded here to be specified
+#   as parameters to the configtxgen tool
 #
 ################################################################################
 Profiles:
 
     OrgsOrdererGenesis:
-        #Capabilities:
-        #    <<: *ChannelCapabilities
         Orderer:
             <<: *OrdererDefaults
             Organizations:
                 - *OrdererOrg
-            Capabilities:
-                <<: *OrdererCapabilities
         Consortiums:
             SampleConsortium:
                 Organizations:
                     - *Produtor
-                    #- *Transportador
-                    #- *Vendedor
-    OrgsChannel:
+    OrgChannel:
         Consortium: SampleConsortium
         Application:
             <<: *ApplicationDefaults
             Organizations:
                 - *Produtor
-                #- *Transportador
-                #- *Vendedor
