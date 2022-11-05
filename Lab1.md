@@ -49,7 +49,7 @@ $ docker-compose -f docker-compose.yaml down
 
 # Sobe containers
 # Antes de continuar será necessário alterar a env FABRIC_CA_SERVER_CA_KEYFILE para a ca.sampledomain.com no docker-compose.yaml
-# ls -la crypto-config/peerOrganizations/produtor.sampledomain.com/ca/ | grep _sk
+# ESQUECE ESSE COMANDO!!!! ls -la crypto-config/peerOrganizations/produtor.sampledomain.com/ca/ | grep _sk
 $ docker-compose -f docker-compose.yaml up -d
 
 # Create the channel
