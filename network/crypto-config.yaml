@@ -31,28 +31,30 @@ PeerOrgs:
     
     #Template: permite a definição de 1 ou mais hosts que são criados sequencialmente a partir de um template. 
     Template:   
-      Count: 2  #nº de nós
+      Count: 1  #nº de nós
+      # Start: 5
+      # Hostname: {{.Prefix}}{{.Index}} # default
 
     #Users: usuários 
     Users:
       Count: 1  #nº de contas de usuário além de Admin
 
-  #====== Transportador ======#
-  - Name: Transportador
-    Domain: transportador.sampledomain.com
-    EnableNodeOUs: true
-    Template:
-      Count: 2
-    Users:
-      Count: 1
+  ##====== Transportador ======#
+  #- Name: Transportador
+  #  Domain: transportador.sampledomain.com
+  #  EnableNodeOUs: true
+  #  Template:
+  #    Count: 1
+  #  Users:
+  #    Count: 1
 
-  #====== Vendedor ======#
-  - Name: Vendedor
-    Domain: vendedor.sampledomain.com
-    EnableNodeOUs: true
-    Template:
-      Count: 2
-    Users:
-      Count: 1
-  # ---------------------------------------------------------------------------
-  
+  ##====== Vendedor ======#
+  #- Name: Vendedor
+  #  Domain: vendedor.sampledomain.com
+  #  EnableNodeOUs: true
+  #  Template:
+  #    Count: 1
+  #  Users:
+  #    Count: 1
+  ## ---------------------------------------------------------------------------
+  #

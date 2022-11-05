@@ -18,7 +18,10 @@
 ################################################################################
 
 Organizations:
-   
+    
+    # SampleOrg define um MSP usando o arquivo "sampleconfig". 
+    # Nunca deve ser usado em produção, mas pode ser usado como modelo para outras definições
+
     - &OrdererOrg 
         #   DefaultOrg define a organização que é usada no sampleconfig 
         #   do ambiente de desenvolvimento fabric.git
@@ -42,21 +45,21 @@ Organizations:
             - Host: peer0.produtor.sampledomain.com
               Port: 7051
             
-    - &Transportador
-        Name: TransportadorMSP
-        ID: TransportadorMSP
-        MSPDir: crypto-config/peerOrganizations/transportador.sampledomain.com/msp
-        AnchorPeers:
-            - Host: peer0.transportador.sampledomain.com
-              Port: 7051
-    
-    - &Vendedor
-        Name: VendedorMSP
-        ID: VendedorMSP
-        MSPDir: crypto-config/peerOrganizations/vendedor.sampledomain.com/msp
-        AnchorPeers:
-            - Host: peer0.vendedor.sampledomain.com
-              Port: 7051
+    #- &Transportador
+    #    Name: TransportadorMSP
+    #    ID: TransportadorMSP
+    #    MSPDir: crypto-config/peerOrganizations/transportador.sampledomain.com/msp
+    #    AnchorPeers:
+    #        - Host: peer0.transportador.sampledomain.com
+    #          Port: 7051
+    #
+    #- &Vendedor
+    #    Name: VendedorMSP
+    #    ID: VendedorMSP
+    #    MSPDir: crypto-config/peerOrganizations/vendedor.sampledomain.com/msp
+    #    AnchorPeers:
+    #        - Host: peer0.vendedor.sampledomain.com
+    #          Port: 7051
 
 ################################################################################
 #
@@ -76,15 +79,15 @@ Organizations:
 #   travará deliberadamente.
 #
 ################################################################################
-Capabilities:    
-    Global: &ChannelCapabilities        
-        V1_1: true
-    
-    Orderer: &OrdererCapabilities        
-        V1_1: true
-    
-    Application: &ApplicationCapabilities        
-        V1_2: true
+#Capabilities:    
+#    Global: &ChannelCapabilities        
+#        V1_1: true
+#    
+#    Orderer: &OrdererCapabilities        
+#        V1_1: true
+#    
+#    Application: &ApplicationCapabilities        
+#        V1_2: true
 
 ################################################################################
 #
@@ -158,8 +161,8 @@ Orderer: &OrdererDefaults
 Profiles:
 
     OrgsOrdererGenesis:
-        Capabilities:
-            <<: *ChannelCapabilities
+        #Capabilities:
+        #    <<: *ChannelCapabilities
         Orderer:
             <<: *OrdererDefaults
             Organizations:
@@ -170,13 +173,13 @@ Profiles:
             SampleConsortium:
                 Organizations:
                     - *Produtor
-                    - *Transportador
-                    - *Vendedor
+                    #- *Transportador
+                    #- *Vendedor
     OrgsChannel:
         Consortium: SampleConsortium
         Application:
             <<: *ApplicationDefaults
             Organizations:
                 - *Produtor
-                - *Transportador
-                - *Vendedor
+                #- *Transportador
+                #- *Vendedor
