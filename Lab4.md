@@ -82,7 +82,7 @@ $ peer chaincode install -l node -n deal -p ../../../chaincode/deal -v 1.0.1
 ~~~
 
 > Nota: Por padrão, a linguagem Golang é o padrão desse comando, logo se o chaincode for ser instalado em Go, não se torna necessário escrever "-l"
-> Nota 2: muito cuidado com o ``-v``. Trata-se da versão que aparece no ``package.json``
+> Nota 2: muito cuidado com o ``-v``. Trata-se da ``version`` que aparece no ``package.json``
 
 Para visualizar o chaincode instalado execute o comando:
 ~~~sh
@@ -113,10 +113,12 @@ $ peer chaincode list --installed
 Get installed chaincodes on peer:
 
 # Vamos instalar nosso chaincode
-$ peer chaincode install -n ccForAll -p github.com/sacc -v 1.0
+$ peer chaincode install -l node -n deal -p ../../../chaincode/deal -v 1.0.1
+# -l, --lang                           Language of the chaincode
 # -n, --name string                    Name of the chaincode
 # -p, --path string                    Path to chaincode
 # -v, --version string                 Version of the chaincode specified in install/instantiate/upgrade commands
+
 
 # Novamente, vamos verificar o canal instalado
 $ peer chaincode list --installed
@@ -145,27 +147,46 @@ Definido as variáveis. Vamos instânciar nosso chaincode usando o comando ``pee
 ~~~sh
 # Atenção, não execute esse comando, vamos instanciar nosso chaincode com policies
 # Vide: Endorsement Policies para executar chaincode
-$ peer chaincode instantiate -n ccForAll -v 1.0 \
-    -o orderer.villalabs.co:7050 -C $CHANNEL_NAME \
+# Esse código está aqui apenas pra consulta
+$ peer chaincode instantiate \
+    -l node \
+    -n deal \
+    -o orderer.villalabs.co:7050 \
+    -C $CHANNEL_NAME \
     -c '{"Args":["Mach","50"]}'
+# -l, --lang                           Language of the chaincode
 # -n, --name string                    Name of the chaincode
 # -v, --version string                 Version of the chaincode specified in install/instantiate/upgrade commands
-# -o, --orderer string                      Ordering service endpoint
+# -o, --orderer string                 Ordering service endpoint
 # -C, --channelID string               The channel on which this command should be executed
 # -c, --ctor string                    Constructor message for the chaincode in JSON format (default "{}")
+
 ~~~
 
 ### Endorsement Policies para executar chaincode
-A instânciação de um chaincode é sinônimo de políticas de endosso (endorsement policy), ambossão confirmados simultâneamente.
+A instânciação de um chaincode é sinônimo de políticas de endosso (endorsement policy), ambos são confirmados simultâneamente.
 
-As políticas de endosso (endorsement policy) são extremamente importantes ao especificar operações no chaincode porque determina que pode executar o contrato e quem apenas possui o código instalado para consulta e transárências.
+As políticas de endosso (endorsement policy) são extremamente importantes ao especificar operações no chaincode porque determina que pode executar o contrato e quem apenas possui o código instalado para consulta e transparências.
+
+> Nota: antes de prosseguir, verifique se o ``channel`` foi corretamente criado (vide Lab1)
 
 Em nosso ``peer0`` vamos executar as políticas de endosso:
 ~~~sh
-$ peer chaincode instantiate -n ccForAll -v 1.0 \
-    -o orderer.villalabs.co:7050 -C $CHANNEL_NAME \
+$ peer chaincode instantiate \
+    -l node \
+    -n deal \
+    -v 1.0.1 \
+    -o orderer.villalabs.co:7050 \
+    -C $CHANNEL_NAME \
     -c '{"Args":["Mach","50"]}' \
     --policy "AND('Org1.peer', OR ('Org1.member'))"
+# -l, --lang                            Language of the chaincode
+# -n, --name string                     Name of the chaincode
+# -v, --version string                  Version of the chaincode specified in install/instantiate/upgrade commands
+# -o, --orderer string                  Ordering service endpoint
+# -C, --channelID string                The channel on which this command should be executed
+# -c, --ctor string                     Constructor message for the chaincode in JSON format (default "{}")
+# --policy                              The endorsement policy associated to this chaincode
 
 # Next, let’s confirm that the chaincode is properly installed on the peer.
 $ peer chaincode list --installed
