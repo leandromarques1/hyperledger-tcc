@@ -13,15 +13,20 @@
 # limitations under the License.
 # 
 
+# ARQUIVO crypto-config.yaml
+# --> contém a definição da topologia de Rede
+# --> permite gerar conjunto de CERTIFICADOS e CHAVES
+#     para as organizações e seus participantes
+
 # ---------------------------------------------------------------------------
-# "OrdererOrgs" - Definition of organizations managing orderer nodes
+# "OrdererOrgs" - Definição de organizações que gerenciam nós de pedidos 
 # ---------------------------------------------------------------------------
   OrdererOrgs:
     # ---------------------------------------------------------------------------
     # Orderer
     # ---------------------------------------------------------------------------
     - Name: Orderer
-      Domain: sampledomain.co    
+      Domain: sampledomain.com 
   
       # ---------------------------------------------------------------------------
       # "Specs" - See PeerOrgs below for complete description
@@ -37,7 +42,7 @@
     # Produtor
     # ---------------------------------------------------------------------------
     - Name: Produtor
-      Domain: produtor.sampledomain.co
+      Domain: produtor.sampledomain.com
       
       # ---------------------------------------------------------------------------
       # "Specs"
