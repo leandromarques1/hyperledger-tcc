@@ -17,7 +17,7 @@ Interessante ter o Lab1 como referencia para essa parte
     # Orderer
     # ---------------------------------------------------------------------------
     - Name: Orderer
-      Domain: villalabs.co    
+      Domain: sampledomain.com    
   
       # ---------------------------------------------------------------------------
       # "Specs" - See PeerOrgs below for complete description
@@ -30,10 +30,10 @@ Interessante ter o Lab1 como referencia para essa parte
   # ---------------------------------------------------------------------------
   PeerOrgs:
     # ---------------------------------------------------------------------------
-    # Org1
+    # Produtor
     # ---------------------------------------------------------------------------
-    - Name: Org1
-      Domain: org1.villalabs.co
+    - Name: Produtor
+      Domain: produtor.sampledomain.com
       
       # ---------------------------------------------------------------------------
       # "Specs"
@@ -52,7 +52,7 @@ Interessante ter o Lab1 como referencia para essa parte
       #                 Org.Domain, respectively.
       # ---------------------------------------------------------------------------
       # Specs:
-      #   - Hostname: foo # implicitly "foo.org1.example.com"
+      #   - Hostname: foo # implicitly "foo.produtor.example.com"
       #     CommonName: foo27.org5.example.com # overrides Hostname-based FQDN set above
       #   - Hostname: bar
       #   - Hostname: baz
@@ -82,8 +82,8 @@ Interessante ter o Lab1 como referencia para essa parte
       Users:
         Count: 1
     
-    - Name: Org2
-      Domain: org2.villalabs.co
+    - Name: Transportador
+      Domain: transportador.sampledomain.com
       
       EnableNodeOUs: true
       # ---------------------------------------------------------------------------
@@ -103,7 +103,7 @@ Interessante ter o Lab1 como referencia para essa parte
       #                 Org.Domain, respectively.
       # ---------------------------------------------------------------------------
       # Specs:
-      #   - Hostname: foo # implicitly "foo.org1.example.com"
+      #   - Hostname: foo # implicitly "foo.produtor.example.com"
       #     CommonName: foo27.org5.example.com # overrides Hostname-based FQDN set above
       #   - Hostname: bar
       #   - Hostname: baz
@@ -155,40 +155,40 @@ Organizations:
         ID: OrdererMSP
 
         # MSPDir is the filesystem path which contains the MSP configuration
-        MSPDir: crypto-config/ordererOrganizations/villalabs.co/msp
+        MSPDir: crypto-config/ordererOrganizations/sampledomain.com/msp
 
-    - &Org1
+    - &Produtor
         # DefaultOrg defines the organization which is used in the sampleconfig
         # of the fabric.git development environment 
-        Name: Org1MSP
+        Name: ProdutorMSP
 
         # ID to load the MSP definition as
-        ID: Org1MSP
+        ID: ProdutorMSP
 
-        MSPDir: crypto-config/peerOrganizations/org1.villalabs.co/msp
+        MSPDir: crypto-config/peerOrganizations/produtor.sampledomain.com/msp
         
         AnchorPeers:
             # AnchorPeers defines the location of peers which can be used
             # for cross org gossip communication.  Note, this value is only
             # encoded in the genesis block in the Application section context
-            - Host: peer1.org1.villalabs.co
+            - Host: peer1.produtor.sampledomain.com
               Port: 7051
 
-    - &Org2
+    - &Transportador
         # DefaultOrg defines the organization which is used in the sampleconfig
         # of the fabric.git development environment 
-        Name: Org2MSP
+        Name: TransportadorMSP
 
         # ID to load the MSP definition as
-        ID: Org2MSP
+        ID: TransportadorMSP
 
-        MSPDir: crypto-config/peerOrganizations/org2.villalabs.co/msp
+        MSPDir: crypto-config/peerOrganizations/transportador.sampledomain.com/msp
         
         AnchorPeers:
             # AnchorPeers defines the location of peers which can be used
             # for cross org gossip communication.  Note, this value is only
             # encoded in the genesis block in the Application section context
-            - Host: peer1.org2.villalabs.co
+            - Host: peer1.transportador.sampledomain.com
               Port: 7051
 
 ################################################################################
@@ -220,7 +220,7 @@ Orderer: &OrdererDefaults
     OrdererType: solo
 
     Addresses:
-        - orderer.villalabs.co:7050
+        - orderer.sampledomain.com:7050
 
     # Batch Timeout: The amount of time to wait before creating a batch
     BatchTimeout: 2s
@@ -268,13 +268,13 @@ Profiles:
         Consortiums:
             SampleConsortium:
                 Organizations:
-                    - *Org1
+                    - *Produtor
     OrgChannel:
         Consortium: SampleConsortium
         Application:
             <<: *ApplicationDefaults
             Organizations:
-                - *Org1
+                - *Produtor
 ~~~
 
 > docker-compose.yaml
@@ -299,53 +299,53 @@ networks:
   sampleNetwork:
 
 volumes:
-  ca.org1.villalabs.co:
-  ca.org2.villalabs.co:
-  orderer.villalabs.co:
-  peer0.org1.villalabs.co:
-  couchdb.peer0.org1.villalabs.co:
-  peer1.org1.villalabs.co:
-  couchdb.peer1.org1.villalabs.co:
-  peer0.org2.villalabs.co:
-  couchdb.peer0.org2.villalabs.co:
-  peer1.org2.villalabs.co:
-  couchdb.peer1.org2.villalabs.co:
+  ca.produtor.sampledomain.com:
+  ca.transportador.sampledomain.com:
+  orderer.sampledomain.com:
+  peer0.produtor.sampledomain.com:
+  couchdb.peer0.produtor.sampledomain.com:
+  peer1.produtor.sampledomain.com:
+  couchdb.peer1.produtor.sampledomain.com:
+  peer0.transportador.sampledomain.com:
+  couchdb.peer0.transportador.sampledomain.com:
+  peer1.transportador.sampledomain.com:
+  couchdb.peer1.transportador.sampledomain.com:
 
 services:
-  ca.org1.villalabs.co:
-    container_name: ca.org1.villalabs.co
+  ca.produtor.sampledomain.com:
+    container_name: ca.produtor.sampledomain.com
     image: hyperledger/fabric-ca
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
-      - FABRIC_CA_SERVER_CA_NAME=ca.org1.villalabs.co
-      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org1.villalabs.co-cert.pem
+      - FABRIC_CA_SERVER_CA_NAME=ca.produtor.sampledomain.com
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.produtor.sampledomain.com-cert.pem
       - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/42215d11328cb5dcc2054e4b4652a4174de4bb10e77e593d371a8a178da365a0_sk
     ports:
       - "7054:7054"
     command: sh -c 'fabric-ca-server start -b admin:adminpw'
     volumes:
-      - ./crypto-config/peerOrganizations/org1.villalabs.co/ca/:/etc/hyperledger/fabric-ca-server-config
+      - ./crypto-config/peerOrganizations/produtor.sampledomain.com/ca/:/etc/hyperledger/fabric-ca-server-config
     networks:
       - sampleNetwork
   
-  ca.org2.villalabs.co:
-    container_name: ca.org2.villalabs.co
+  ca.transportador.sampledomain.com:
+    container_name: ca.transportador.sampledomain.com
     image: hyperledger/fabric-ca
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
-      - FABRIC_CA_SERVER_CA_NAME=ca.org2.villalabs.co
-      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org2.villalabs.co-cert.pem
+      - FABRIC_CA_SERVER_CA_NAME=ca.transportador.sampledomain.com
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.transportador.sampledomain.com-cert.pem
       - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/42215d11328cb5dcc2054e4b4652a4174de4bb10e77e593d371a8a178da365a0_sk
     ports:
       - "8054:7054"
     command: sh -c 'fabric-ca-server start -b admin:adminpw'
     volumes:
-      - ./crypto-config/peerOrganizations/org2.villalabs.co/ca/:/etc/hyperledger/fabric-ca-server-config
+      - ./crypto-config/peerOrganizations/transportador.sampledomain.com/ca/:/etc/hyperledger/fabric-ca-server-config
     networks:
       - sampleNetwork
 
-  orderer.villalabs.co:
-    container_name: orderer.villalabs.co
+  orderer.sampledomain.com:
+    container_name: orderer.sampledomain.com
     image: hyperledger/fabric-orderer
     environment:
       - FABRIC_LOGGING_SPEC=info
@@ -360,26 +360,26 @@ services:
       - 7050:7050
     volumes:
       - ./channel-artifacts/:/etc/hyperledger/configtx
-      - ./crypto-config/ordererOrganizations/villalabs.co/orderers/orderer.villalabs.co/:/etc/hyperledger/msp/orderer
-      - ./crypto-config/peerOrganizations/org1.villalabs.co/peers/peer0.org1.villalabs.co/:/etc/hyperledger/msp/peerOrg1
+      - ./crypto-config/ordererOrganizations/sampledomain.com/orderers/orderer.sampledomain.com/:/etc/hyperledger/msp/orderer
+      - ./crypto-config/peerOrganizations/produtor.sampledomain.com/peers/peer0.produtor.sampledomain.com/:/etc/hyperledger/msp/peerProdutor
     networks:
       - sampleNetwork
 
-  peer0.org1.villalabs.co:
-    container_name: peer0.org1.villalabs.co
+  peer0.produtor.sampledomain.com:
+    container_name: peer0.produtor.sampledomain.com
     image: hyperledger/fabric-peer
     environment:
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-      - CORE_PEER_ID=peer0.org1.villalabs.co
+      - CORE_PEER_ID=peer0.produtor.sampledomain.com
       - FABRIC_LOGGING_SPEC=info
       - CORE_CHAINCODE_LOGGING_LEVEL=info
-      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_LOCALMSPID=ProdutorMSP
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
-      - CORE_PEER_ADDRESS=peer0.org1.villalabs.co:7051
+      - CORE_PEER_ADDRESS=peer0.produtor.sampledomain.com:7051
       - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=network_sampleNetwork
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
-      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.peer0.org1.villalabs.co:5984
-      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=peer0.org1
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.peer0.produtor.sampledomain.com:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=peer0.produtor
       - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=password
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric
     command: peer node start
@@ -389,30 +389,30 @@ services:
       - 7053:7053
     volumes:
       - /var/run/:/host/var/run/
-      - ./crypto-config/peerOrganizations/org1.villalabs.co/peers/peer0.org1.villalabs.co/msp:/etc/hyperledger/msp/peer
-      - ./crypto-config/peerOrganizations/org1.villalabs.co/users:/etc/hyperledger/msp/users
+      - ./crypto-config/peerOrganizations/produtor.sampledomain.com/peers/peer0.produtor.sampledomain.com/msp:/etc/hyperledger/msp/peer
+      - ./crypto-config/peerOrganizations/produtor.sampledomain.com/users:/etc/hyperledger/msp/users
       - ./channel-artifacts:/etc/hyperledger/configtx
     depends_on:
-      - orderer.villalabs.co
-      - couchdb.peer0.org1.villalabs.co
+      - orderer.sampledomain.com
+      - couchdb.peer0.produtor.sampledomain.com
     networks:
       - sampleNetwork
   
-  peer1.org1.villalabs.co:
-    container_name: peer1.org1.villalabs.co
+  peer1.produtor.sampledomain.com:
+    container_name: peer1.produtor.sampledomain.com
     image: hyperledger/fabric-peer
     environment:
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-      - CORE_PEER_ID=peer1.org1.villalabs.co
+      - CORE_PEER_ID=peer1.produtor.sampledomain.com
       - FABRIC_LOGGING_SPEC=info
       - CORE_CHAINCODE_LOGGING_LEVEL=info
-      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_LOCALMSPID=ProdutorMSP
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
-      - CORE_PEER_ADDRESS=peer1.org1.villalabs.co:7051
+      - CORE_PEER_ADDRESS=peer1.produtor.sampledomain.com:7051
       - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=network_sampleNetwork
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
-      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.peer1.org1.villalabs.co:5984
-      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=peer1.org1
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.peer1.produtor.sampledomain.com:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=peer1.produtor
       - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=password
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric
     command: peer node start
@@ -422,30 +422,30 @@ services:
       - 8053:7053
     volumes:
       - /var/run/:/host/var/run/
-      - ./crypto-config/peerOrganizations/org1.villalabs.co/peers/peer0.org1.villalabs.co/msp:/etc/hyperledger/msp/peer
-      - ./crypto-config/peerOrganizations/org1.villalabs.co/users:/etc/hyperledger/msp/users
+      - ./crypto-config/peerOrganizations/produtor.sampledomain.com/peers/peer0.produtor.sampledomain.com/msp:/etc/hyperledger/msp/peer
+      - ./crypto-config/peerOrganizations/produtor.sampledomain.com/users:/etc/hyperledger/msp/users
       - ./channel-artifacts:/etc/hyperledger/configtx
     depends_on:
-      - orderer.villalabs.co
-      - couchdb.peer1.org1.villalabs.co
+      - orderer.sampledomain.com
+      - couchdb.peer1.produtor.sampledomain.com
     networks:
       - sampleNetwork
 
-  peer0.org2.villalabs.co:
-    container_name: peer0.org2.villalabs.co
+  peer0.transportador.sampledomain.com:
+    container_name: peer0.transportador.sampledomain.com
     image: hyperledger/fabric-peer
     environment:
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-      - CORE_PEER_ID=peer0.org2.villalabs.co
+      - CORE_PEER_ID=peer0.transportador.sampledomain.com
       - FABRIC_LOGGING_SPEC=info
       - CORE_CHAINCODE_LOGGING_LEVEL=info
-      - CORE_PEER_LOCALMSPID=Org2MSP
+      - CORE_PEER_LOCALMSPID=TransportadorMSP
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
-      - CORE_PEER_ADDRESS=peer0.org2.villalabs.co:7051
+      - CORE_PEER_ADDRESS=peer0.transportador.sampledomain.com:7051
       - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=network_sampleNetwork
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
-      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.peer0.org2.villalabs.co:5984
-      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=peer0.org2
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.peer0.transportador.sampledomain.com:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=peer0.transportador
       - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=password
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric
     command: peer node start
@@ -455,30 +455,30 @@ services:
       - 9053:7053
     volumes:
       - /var/run/:/host/var/run/
-      - ./crypto-config/peerOrganizations/org2.villalabs.co/peers/peer0.org2.villalabs.co/msp:/etc/hyperledger/msp/peer
-      - ./crypto-config/peerOrganizations/org2.villalabs.co/users:/etc/hyperledger/msp/users
+      - ./crypto-config/peerOrganizations/transportador.sampledomain.com/peers/peer0.transportador.sampledomain.com/msp:/etc/hyperledger/msp/peer
+      - ./crypto-config/peerOrganizations/transportador.sampledomain.com/users:/etc/hyperledger/msp/users
       - ./channel-artifacts:/etc/hyperledger/configtx
     depends_on:
-      - orderer.villalabs.co
-      - couchdb.peer0.org2.villalabs.co
+      - orderer.sampledomain.com
+      - couchdb.peer0.transportador.sampledomain.com
     networks:
       - sampleNetwork
   
-  peer1.org2.villalabs.co:
-    container_name: peer1.org2.villalabs.co
+  peer1.transportador.sampledomain.com:
+    container_name: peer1.transportador.sampledomain.com
     image: hyperledger/fabric-peer
     environment:
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-      - CORE_PEER_ID=peer1.org2.villalabs.co
+      - CORE_PEER_ID=peer1.transportador.sampledomain.com
       - FABRIC_LOGGING_SPEC=info
       - CORE_CHAINCODE_LOGGING_LEVEL=info
-      - CORE_PEER_LOCALMSPID=Org2MSP
+      - CORE_PEER_LOCALMSPID=TransportadorMSP
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
-      - CORE_PEER_ADDRESS=peer1.org2.villalabs.co:7051
+      - CORE_PEER_ADDRESS=peer1.transportador.sampledomain.com:7051
       - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=network_sampleNetwork
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
-      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.peer1.org2.villalabs.co:5984
-      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=peer1.org2
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.peer1.transportador.sampledomain.com:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=peer1.transportador
       - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=password
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric
     command: peer node start
@@ -488,19 +488,19 @@ services:
       - 10053:7053
     volumes:
       - /var/run/:/host/var/run/
-      - ./crypto-config/peerOrganizations/org2.villalabs.co/peers/peer1.org2.villalabs.co/msp:/etc/hyperledger/msp/peer
-      - ./crypto-config/peerOrganizations/org2.villalabs.co/users:/etc/hyperledger/msp/users
+      - ./crypto-config/peerOrganizations/transportador.sampledomain.com/peers/peer1.transportador.sampledomain.com/msp:/etc/hyperledger/msp/peer
+      - ./crypto-config/peerOrganizations/transportador.sampledomain.com/users:/etc/hyperledger/msp/users
       - ./channel-artifacts:/etc/hyperledger/configtx
     depends_on:
-      - orderer.villalabs.co
-      - couchdb.peer1.org2.villalabs.co
+      - orderer.sampledomain.com
+      - couchdb.peer1.transportador.sampledomain.com
     networks:
       - sampleNetwork
       
-  couchdb.peer0.org1.villalabs.co:
-    container_name: couchdb.peer0.org1.villalabs.co
+  couchdb.peer0.produtor.sampledomain.com:
+    container_name: couchdb.peer0.produtor.sampledomain.com
     environment:
-      - COUCHDB_USER=peer0.org1
+      - COUCHDB_USER=peer0.produtor
       - COUCHDB_PASSWORD=password
     image: hyperledger/fabric-couchdb
     ports:
@@ -508,10 +508,10 @@ services:
     networks:
       - sampleNetwork
 
-  couchdb.peer1.org1.villalabs.co:
-    container_name: couchdb.peer1.org1.villalabs.co
+  couchdb.peer1.produtor.sampledomain.com:
+    container_name: couchdb.peer1.produtor.sampledomain.com
     environment:
-      - COUCHDB_USER=peer1.org1
+      - COUCHDB_USER=peer1.produtor
       - COUCHDB_PASSWORD=password
     image: hyperledger/fabric-couchdb
     ports:
@@ -519,10 +519,10 @@ services:
     networks:
       - sampleNetwork
 
-  couchdb.peer0.org2.villalabs.co:
-    container_name: couchdb.peer0.org2.villalabs.co
+  couchdb.peer0.transportador.sampledomain.com:
+    container_name: couchdb.peer0.transportador.sampledomain.com
     environment:
-      - COUCHDB_USER=peer0.org2
+      - COUCHDB_USER=peer0.transportador
       - COUCHDB_PASSWORD=password
     image: hyperledger/fabric-couchdb
     ports:
@@ -530,10 +530,10 @@ services:
     networks:
       - sampleNetwork
 
-  couchdb.peer1.org2.villalabs.co:
-    container_name: couchdb.peer1.org2.villalabs.co
+  couchdb.peer1.transportador.sampledomain.com:
+    container_name: couchdb.peer1.transportador.sampledomain.com
     environment:
-      - COUCHDB_USER=peer1.org2
+      - COUCHDB_USER=peer1.transportador
       - COUCHDB_PASSWORD=password
     image: hyperledger/fabric-couchdb
     ports:
@@ -550,9 +550,9 @@ services:
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - CORE_LOGGING_LEVEL=info
       - CORE_PEER_ID=cli
-      - CORE_PEER_ADDRESS=peer0.org1.villalabs.co:7051
-      - CORE_PEER_LOCALMSPID=Org1MSP
-      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.villalabs.co/users/Admin@org1.villalabs.co/msp
+      - CORE_PEER_ADDRESS=peer0.produtor.sampledomain.com:7051
+      - CORE_PEER_LOCALMSPID=ProdutorMSP
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/produtor.sampledomain.com/users/Admin@produtor.sampledomain.com/msp
       - CORE_CHAINCODE_KEEPALIVE=10
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     command: /bin/bash
@@ -564,8 +564,8 @@ services:
     networks:
         - sampleNetwork
    #depends_on:
-   #   - orderer.villalabs.co
-   #   - peer0.org1.villalabs.co
+   #   - orderer.sampledomain.com
+   #   - peer0.produtor.sampledomain.com
 
 ~~~
 
@@ -577,36 +577,35 @@ $ cryptogen extend --config=crypto-config.yaml
 # Pastas para as orgs
 $ ls -la ./crypto-config/peerOrganizations/
 
-# Salve as definições da Org2MSP em arquivos json
-$ configtxgen -printOrg Org2MSP > ./channel-artifacts/org2_definition.json
+# Salve as definições da TransportadorMSP em arquivos json
+$ configtxgen -printOrg TransportadorMSP > ./channel-artifacts/transportador_definition.json
 ~~~
 
 Primeiro será necessário inicializar os contêineres para noss CA.
 ~~~sh
 # Antes remova o contêiner usado pela definições antigas
-$ docker rm -f ca.villalabs.co
+$ docker rm -f ca.sampledomain.com
 
 # Inicie as novas
 $ docker-compose -f docker-compose.yaml up -d \
-  ca.org1.villalabs.co ca.org2.villalabs.co
-~~~
+  ca.produtor.sampledomain.com ca.transportador.sampledomain.com
 
-### Adicionar a Org2
+### Adicionar a Transportador
 
 ~~~h
 $ docker exec -it cli bash
-$ export CHANNEL_NAME=villalabs-channel
+$ export CHANNEL_NAME=sampledomain-channel
 
 $ peer channel fetch config blockFetchedConfig.pb \
-  -o orderer.villalabs.co:7050 -c $CHANNEL_NAME
+  -o orderer.sampledomain.com:7050 -c $CHANNEL_NAME
   
 # Decodifica para formato json
 $ configtxlator proto_decode --input blockFetchedConfig.pb \
   --type common.Block | jq .data.data[0].payload.data.config > configBlock.json
   
-# Modifica as configurações atuais para incluir as definições da Org2
-$ jq -s '.[0] * {"channel_group":{"groups":{"Application":{"groups":{"Org2MSP":.[1]}}}}}' \
-  configBlock.json ./config/org2_definition.json > configChanges.json
+# Modifica as configurações atuais para incluir as definições da Transportador
+$ jq -s '.[0] * {"channel_group":{"groups":{"Application":{"groups":{"TransportadorMSP":.[1]}}}}}' \
+  configBlock.json ./config/transportador_definition.json > configChanges.json
 
 # Codifica para formato tx
 $ configtxlator proto_encode --input configBlock.json \
@@ -618,57 +617,57 @@ $ configtxlator proto_encode --input configChanges.json \
   
 $ configtxlator compute_update --channel_id $CHANNEL_NAME \
   --original configBlock.pb --updated configChanges.pb \
-  --output configProposal_Org2.pb
+  --output configProposal_Transportador.pb
   
-$ configtxlator proto_decode --input configProposal_Org2.pb \
-  --type common.ConfigUpdate | jq . > configProposal_Org2.json
+$ configtxlator proto_decode --input configProposal_Transportador.pb \
+  --type common.ConfigUpdate | jq . > configProposal_Transportador.json
   
-$ echo '{"payload":{"header":{"channel_header":{"channel_id":"villalabs-channel","type":2}},"data":{"config_update":'$(cat configProposal_Org2.json)'}}}' | jq . > org2SubmitReady.json
+$ echo '{"payload":{"header":{"channel_header":{"channel_id":"sampledomain-channel","type":2}},"data":{"config_update":'$(cat configProposal_Transportador.json)'}}}' | jq . > transportadorSubmitReady.json
 
-$ configtxlator proto_encode --input org2SubmitReady.json \
-  --type common.Envelope --output org2SubmitReady.pb
+$ configtxlator proto_encode --input transportadorSubmitReady.json \
+  --type common.Envelope --output transportadorSubmitReady.pb
 
-$ peer channel signconfigtx -f org2SubmitReady.pb
+$ peer channel signconfigtx -f transportadorSubmitReady.pb
 
-$ peer channel update -f org2SubmitReady.pb \
-  -o orderer.villalabs.co:7050 -c $CHANNEL_NAME
+$ peer channel update -f transportadorSubmitReady.pb \
+  -o orderer.sampledomain.com:7050 -c $CHANNEL_NAME
 
-# Pronto, vamos inicializar os contêiners para Org2
+# Pronto, vamos inicializar os contêiners para Transportador
 $ docker-compose -f docker-compose.yaml up -d \
-  couchdb.peer0.org2.villalabs.co peer0.org2.villalabs.co \
-  couchdb.peer1.org2.villalabs.co peer1.org2.villalabs.co
+  couchdb.peer0.transportador.sampledomain.com peer0.transportador.sampledomain.com \
+  couchdb.peer1.transportador.sampledomain.com peer1.transportador.sampledomain.com
 
 $ docker ps -a --format "table {{.ID}}\t{{.Names}}\t{{.Status}}"
 ~~~
 
-Vamos agora adicionar o canal existente aos peer's da Org2
+Vamos agora adicionar o canal existente aos peer's da Transportador
 ~~~sh
 $ docker exec -it cli bash
-$ export CHANNEL_NAME=villalabs-channel
+$ export CHANNEL_NAME=sampledomain-channel
 
-$ export CORE_PEER_LOCALMSPID=Org2MSP
-$ export CORE_PEER_ADDRESS=peer0.org2.villalabs.co:7051
-$ export CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.villalabs.co/users/Admin\@org2.villalabs.co/msp
+$ export CORE_PEER_LOCALMSPID=TransportadorMSP
+$ export CORE_PEER_ADDRESS=peer0.transportador.sampledomain.com:7051
+$ export CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/transportador.sampledomain.com/users/Admin\@transportador.sampledomain.com/msp
 
-$ peer channel fetch config Org2AddedConfig.pb \
-  -o orderer.villalabs.co:7050 -c $CHANNEL_NAME
-$ peer channel fetch 0 Org2AddedConfig.block \
-  -o orderer.villalabs.co:7050 -c $CHANNEL_NAME
+$ peer channel fetch config TransportadorAddedConfig.pb \
+  -o orderer.sampledomain.com:7050 -c $CHANNEL_NAME
+$ peer channel fetch 0 TransportadorAddedConfig.block \
+  -o orderer.sampledomain.com:7050 -c $CHANNEL_NAME
   
-$ peer channel join -b Org2AddedConfig.block
+$ peer channel join -b TransportadorAddedConfig.block
 
 $ peer chaincode install -l node -n deal -p ../../../chaincode/deal -v 1.0.1
   
 # Vamos ao peer1
-$ export CORE_PEER_ADDRESS=peer1.org2.villalabs.co:7051  
-$ peer channel join -b Org2AddedConfig.block
+$ export CORE_PEER_ADDRESS=peer1.transportador.sampledomain.com:7051  
+$ peer channel join -b TransportadorAddedConfig.block
 $ peer chaincode install -l node -n deal -p ../../../chaincode/deal -v 1.0.1
   
 $ peer chaincode list --installed
 
 $ peer chaincode upgrade -n deal -v 1.0.2 -C $CHANNEL_NAME \
-  -o orderer.villalabs.co:7050 \
-  --policy "AND('Org1.peer', 'Org2.peer', OR ('Org1.admin'))" \
+  -o orderer.sampledomain.com:7050 \
+  --policy "AND('Produtor.peer', 'Transportador.peer', OR ('Produtor.admin'))" \
   -c '{"Args":["Mach", "50"]}'
   
 $ peer chaincode list --installed && peer chaincode list \
