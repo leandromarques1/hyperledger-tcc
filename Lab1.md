@@ -23,7 +23,7 @@ $ cd /opt/blockchain/hyperledger/fabric-samples
 
 # Clonando arquivos de configuracoes
 #$ git clone -b feature/lab-1 https://github.com/leandromarques1/hyperledger-tcc.git network
-$ git clone https://github.com/leandromarques1/hyperledger-tcc.git network
+$ git clone https://github.com/leandromarques1/hyperledger-tcc/tree/main/network.git network
 
 # Acessando diretório dos arquivos
 $ cd network
