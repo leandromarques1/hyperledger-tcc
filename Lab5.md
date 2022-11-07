@@ -6,7 +6,7 @@ No arquivo de configuração configtx.yaml alter o item ``AnchorPeers`` localiza
 
 ~~~txt
 AnchorPeers:
-    - Host: peer1.produtor.example.com
+    - Host: peer1.produtor.sampledomain.com
         Port: 7051
 ~~~
 
