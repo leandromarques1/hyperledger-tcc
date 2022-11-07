@@ -12,34 +12,38 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # 
+
+#versão do Docker-Compopse que está sendo utilizada
 version: '2'
 
 networks:
   sampleNetwork:
 
+#Volume: cria uma cópia dos dados que estão no container para a nossa máquina (repositório local)
 volumes:
   ca.sampledomain.com:
   orderer.sampledomain.com:
   peer0.produtor.sampledomain.com:
-  peer1.produtor.sampledomain.com:
 
+#SERVICES: informar quais containers serão criados
+#ou seja, quais serão os serviços (services) que o Compose vai subir
 services:
-  ca.sampledomain.com:
-    container_name: ca.sampledomain.com
-    image: hyperledger/fabric-ca
-    environment:
+  ca.sampledomain.com:                      #nome do Serviço
+    container_name: ca.sampledomain.com     #nome do container
+    image: hyperledger/fabric-ca            #imagem que será usada como referência p/ a criação do container
+    environment:                            #variáveis de ambiente
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_NAME=ca.sampledomain.com
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.produtor.sampledomain.com-cert.pem
       #- FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/649cf9c74d5400a7a605e2366fe15354fc7d4f51b4ded69ecd958c72bb70f5a2_sk
-      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/56114fbc4ae1a114aab3022af935b6fef4703cf59405a8f2eff525dd19ca62a8_sk
-    ports:
-      - "7054:7054"
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/f9f90e6dd3d79e9373d6da84cef3f995bce46206b1ac1f5093553975bbdad55b_sk
+    ports:                  
+      - "7054:7054"         #portas que o container irá usar (no esquema: {host_port}:{container_port})
     command: sh -c 'fabric-ca-server start -b admin:adminpw'
     volumes:
       - ./crypto-config/peerOrganizations/produtor.sampledomain.com/ca/:/etc/hyperledger/fabric-ca-server-config
     networks:
-      - sampleNetwork
+      - sampleNetwork       #rede pela qual serão feitas as comunicações
 
   orderer.sampledomain.com:
     container_name: orderer.sampledomain.com
@@ -51,7 +55,7 @@ services:
       - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/genesis.block
       - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
       - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/msp/orderer/msp
-    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/orderer
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/orderer   #isso aqui pode me dar dor de cabeça!
     command: orderer
     ports:
       - 7050:7050
@@ -117,8 +121,7 @@ services:
     networks:
       - sampleNetwork
 
-  
-  cli:
+  cli:                #CLI: container que permite acessar cada nó participante da rede                         
     container_name: cli
     image: hyperledger/fabric-tools
     tty: true
