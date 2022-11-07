@@ -12,32 +12,40 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # 
+
+#versão do Docker-Compopse que está sendo utilizada
 version: '2'
 
 networks:
   sampleNetwork:
 
+#Volume: cria uma cópia dos dados que estão no container para a nossa máquina (repositório local)
 volumes:
   ca.sampledomain.com:
   orderer.sampledomain.com:
   peer0.produtor.sampledomain.com:
+  peer1.produtor.sampledomain.com:
+  cli:
 
+#SERVICES: informar quais containers serão criados
+#ou seja, quais serão os serviços (services) que o Compose vai subir
 services:
-  ca.sampledomain.com:
-    container_name: ca.sampledomain.com
-    image: hyperledger/fabric-ca
-    environment:
+  ca.sampledomain.com:                      #nome do Serviço
+    container_name: ca.sampledomain.com     #nome do container
+    image: hyperledger/fabric-ca            #imagem que será usada como referência p/ a criação do container
+    environment:                            #variáveis de ambiente
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_NAME=ca.sampledomain.com
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.produtor.sampledomain.com-cert.pem
-      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/649cf9c74d5400a7a605e2366fe15354fc7d4f51b4ded69ecd958c72bb70f5a2_sk
-    ports:
-      - "7054:7054"
+      #- FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/649cf9c74d5400a7a605e2366fe15354fc7d4f51b4ded69ecd958c72bb70f5a2_sk
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/f9f90e6dd3d79e9373d6da84cef3f995bce46206b1ac1f5093553975bbdad55b_sk
+    ports:                  
+      - "7054:7054"         #portas que o container irá usar (no esquema: {host_port}:{container_port})
     command: sh -c 'fabric-ca-server start -b admin:adminpw'
     volumes:
       - ./crypto-config/peerOrganizations/produtor.sampledomain.com/ca/:/etc/hyperledger/fabric-ca-server-config
     networks:
-      - sampleNetwork
+      - sampleNetwork       #rede pela qual serão feitas as comunicações
 
   orderer.sampledomain.com:
     container_name: orderer.sampledomain.com
@@ -49,7 +57,7 @@ services:
       - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/genesis.block
       - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
       - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/msp/orderer/msp
-    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/orderer
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/orderer   #isso aqui pode me dar dor de cabeça!
     command: orderer
     ports:
       - 7050:7050
@@ -72,6 +80,10 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
       - CORE_PEER_ADDRESS=peer0.produtor.sampledomain.com:7051
       - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=network_sampleNetwork
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.peer0.produtor.sampledomain.com:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=peer0.produtor
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=password
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric
     command: peer node start
     # command: peer node start --peer-chaincodedev=true
@@ -88,7 +100,60 @@ services:
     networks:
       - sampleNetwork
 
-  cli:
+  peer1.produtor.sampledomain.com:
+    container_name: peer1.produtor.sampledomain.com
+    image: hyperledger/fabric-peer
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_PEER_ID=peer1.produtor.sampledomain.com
+      - CORE_LOGGING_PEER=info
+      - CORE_CHAINCODE_LOGGING=debug
+      - CORE_PEER_LOCALMSPID=ProdutorMSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
+      - CORE_PEER_ADDRESS=peer1.produtor.sampledomain.com:7051
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=network_sampleNetwork
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.peer1.produtor.sampledomain.com:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=peer1.produtor
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=password
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: peer node start
+    ports:
+      - 8051:7051
+      - 8053:7053
+    volumes:
+      - /var/run/:/host/var/run/
+      - ./crypto-config/peerOrganizations/produtor.sampledomain.com/peers/peer1.produtor.sampledomain.com/msp:/etc/hyperledger/msp/peer
+      - ./crypto-config/peerOrganizations/produtor.sampledomain.com/users:/etc/hyperledger/msp/users
+      - ./channel-artifacts:/etc/hyperledger/configtx
+    depends_on:
+      - orderer.sampledomain.com
+    networks:
+      - sampleNetwork
+
+  couchdb.peer0.produtor.sampledomain.com:
+    container_name: couchdb.peer0.produtor.sampledomain.com
+    environment:
+      - COUCHDB_USER=peer0.produtor
+      - COUCHDB_PASSWORD=password
+    image: hyperledger/fabric-couchdb
+    ports: 
+      - 5984:5984
+    networks: 
+      - sampleNetwork
+
+  couchdb.peer1.produtor.sampledomain.com:
+    container_name: couchdb.peer1.produtor.sampledomain.com
+    environment:
+      - COUCHDB_USER=peer1.produtor
+      - COUCHDB_PASSWORD=password
+    image: hyperledger/fabric-couchdb
+    ports: 
+      - 6984:5984
+    networks: 
+      - sampleNetwork
+    
+  cli:                #CLI: container que permite acessar cada nó participante da rede                         
     container_name: cli
     image: hyperledger/fabric-tools
     tty: true
