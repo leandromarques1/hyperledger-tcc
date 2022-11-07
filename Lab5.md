@@ -40,6 +40,7 @@ export CHANNEL_NAME=sampledomain-channel
 $ peer channel update -o orderer.sampledomain.com:7050 -c $CHANNEL_NAME \
     -f ./config/changeanchorpeerprodutor.tx
 
+#saia do CLI digitando Ctrl+D
 # Verifique os logs
 $ docker logs peer1.produtor.sampledomain.com
 
