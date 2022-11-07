@@ -15,23 +15,33 @@
 
 ################################################################################
 #
-#   Section: Organizations
+# SEÇÃO: Organizações
+#   --> Esta seção define as diferentes identidades organizacionais 
+#     que serão referenciadas posteriormente na configuração.
 #
-#   - This section defines the different organizational identities which will
-#   be referenced later in the configuration.
+# ARQUIVO configtxgen contém as configurações:
+#   --> do nó ordenador (OrdererOrg); 
+#   --> das organizações participantes (Produtor, Transportador e Consumidor);
+#   --> dos peers âncora (anchor peer) de cada organização
+#
+# ANCHOR PEER
+#   --> é a porta de entrada (ou saída) para comunicação de
+#       uma organização com os demais participantes da Rede
+#       (Protocolo GOSSIP)
+#   --> cada organização precisa ter PELO MENOS um anchor peer
 #
 ################################################################################
 Organizations:
    
     - &OrdererOrg
-        # DefaultOrg defines the organization which is used in the sampleconfig
-        # of the fabric.git development environment    
+        #   DefaultOrg define a organização que é usada no sampleconfig 
+        #   do ambiente de desenvolvimento fabric.git
         Name: OrdererOrg
 
-        # ID to load the MSP definition as
+        # ID para carregar a definição do MSP como
         ID: OrdererMSP
 
-        # MSPDir is the filesystem path which contains the MSP configuration
+        # MSPDir: é o caminho do sistema de arquivos (filesystem path) que contém a configuração do MSP
         MSPDir: crypto-config/ordererOrganizations/sampledomain.com/msp
 
     - &Produtor
@@ -45,9 +55,10 @@ Organizations:
         MSPDir: crypto-config/peerOrganizations/produtor.sampledomain.com/msp
         
         AnchorPeers:
-            # AnchorPeers defines the location of peers which can be used
-            # for cross org gossip communication.  Note, this value is only
-            # encoded in the genesis block in the Application section context
+            # --> define a localização dos peers que podem ser usados 
+            #     para comunicação entre organizações (Protocolo Gossip). 
+            # --> esse valor é codificado apenas no bloco genesis no  
+            #     contexto da seção Application
             - Host: peer0.produtor.sampledomain.com
               Port: 7051
 
