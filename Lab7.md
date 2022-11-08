@@ -269,12 +269,14 @@ Profiles:
             SampleConsortium:
                 Organizations:
                     - *Produtor
+                    - *Transportador
     OrgChannel:
         Consortium: SampleConsortium
         Application:
             <<: *ApplicationDefaults
             Organizations:
                 - *Produtor
+                - *Transportador
 ~~~
 
 > docker-compose.yaml
