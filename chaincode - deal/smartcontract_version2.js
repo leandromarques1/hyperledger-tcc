@@ -35,11 +35,23 @@ class SupplychainContract extends Contract {
         var nodeName = container_name.split(".")[1];
         console.log(nodeName);
     #==== Outra forma (ainda melhor, e validad na IBM Blockchain Plataform ====#
-        var name = "/opt/microfab/data/peer-org1/data/externalbuilder/builds/Asset_new_0.0.8-105d776a4db79fbb3692d078ac54dec189a5e9dc300d717d6c30d9cf5063ca2f/bld/lib"
-        var name_peer = name.split("/")[4]
+        var name = __dirname;
+        var parte = name.split("/")
+        var tam_name = name.split("/").length
+        var i;
+        for (i=0; i< tam_name; i++){
+            //console.log(i)
+            //console.log(name.split("/")[i])
+            //console.log(parte[i])
+            var str = parte[i];
+            if(str.match(/peer/)){
+                var name_peer = str;
+                break;
+            }
+        }
         var name_org = name_peer.split("-")[1]
-        console.log(name_org)
-
+        console.log(name_org);
+        //return name_org
     */
 
     /*  CRUD
