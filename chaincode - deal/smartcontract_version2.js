@@ -27,12 +27,18 @@ const fs = require('fs');   //manipulação de arquivos
 //Smart Contract será escrito dentro da classe "supplychainContract" 
 class SupplychainContract extends Contract {
 
-    /*  Codigo para extrair o nome da organização do Nome do Container
+    /*  
+    #==== Codigo para extrair o nome da organização do Nome do Container ====#
         "nodeName" tem a ver com a organização presente em "container_name"
         
         var container_name = "peer0.org1.villalabs.co"
         var nodeName = container_name.split(".")[1];
         console.log(nodeName);
+    #==== Outra forma (ainda melhor, e validad na IBM Blockchain Plataform ====#
+        var name = "/opt/microfab/data/peer-org1/data/externalbuilder/builds/Asset_new_0.0.8-105d776a4db79fbb3692d078ac54dec189a5e9dc300d717d6c30d9cf5063ca2f/bld/lib"
+        var name_peer = name.split("/")[4]
+        var name_org = name_peer.split("-")[1]
+        console.log(name_org)
 
     */
 
