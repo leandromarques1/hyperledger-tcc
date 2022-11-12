@@ -52,6 +52,7 @@ $ cat > deal.js
 $ ls -l
 
 #criar arquivo 'package.json'
+$ cat > package.json
 # escrever ou colar "package.json" aqui
 # para sair e salvar, é só apertar ctrl+Z
 
