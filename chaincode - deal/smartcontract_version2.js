@@ -64,6 +64,30 @@ class SupplychainContract extends Contract {
 
     */
 
+    async name_org(ctx) {
+        var name = __dirname;
+        var parte = name.split("/")
+        var tam_name = name.split("/").length
+        var i;
+        for (i=0; i< tam_name; i++){
+            //console.log(i)
+            //console.log(name.split("/")[i])
+            //console.log(parte[i])
+            var str = parte[i];
+            if(str.match(/peer/)){
+                var name_peer = str;
+                break;
+            }
+        }
+        var name_org = name_peer.split("-")[1]
+        return name_org;
+    }
+
+    async node_name(ctx) {
+        var nodenodeName = this.name_org(ctx);
+        return nodenodeName; 
+    }
+
     //verificar se um produto existe ou não
     async existsProduct (ctx, product_ID) {
         // → product_ID: nº de identificação do produto
