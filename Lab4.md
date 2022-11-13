@@ -175,6 +175,9 @@ Se você quiser que peers adicionais interajam com o ledger, precisará juntá-l
 
 Uma vez que o chaincode tenha sido instanciado no canal, podemos renunciar ao sinalizador l. Precisamos apenas passar o identificador do canal e o nome do chaincode.
 
+#### Query
+#### Invoke
+#### Query
 -------------------------------------------------------------------------------------------------------------------
 
 
