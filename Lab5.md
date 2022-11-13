@@ -2,7 +2,7 @@
 Embora a definição de uma atualização para a maioria dos produtos de software é simplismente uma mudança de versão, uma atualização no contexto Hyperledger significa uma "edição" para na configuração da rede blockchain. A maioria das "atualizações" na rede será enviada como transações de configurações.
 
 ## Atualizar Anchor Peers usando ``configtxgen``
-No arquivo de configuração configtx.yaml alter o item ``AnchorPeers`` localizado na sessão ``Organizations```.
+No arquivo de configuração configtx.yaml alter o item ``AnchorPeers`` localizado na sessão ```Organizations```.
 
 ~~~txt
 AnchorPeers:
