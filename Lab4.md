@@ -131,6 +131,7 @@ Name: deal, Version: 1.0, Path: github.com/sacc, Id: cd57c948631f3241d19204c3502
 
 ### Agora vamos instância nosso Chaincode
 Os aplicativos interagem com o ledger blockchain por meio de ```chaincode```. Como tal, precisamos instalar o chaincode em cada peer que irá executar e endossar nossas transações, e então instanciar o chaincode no canal.
+
 Primeiro, instale o código de cadeia Go, Node.js ou Java de amostra no nó peer0 em Org1. Esses comandos colocam o tipo de código-fonte especificado no sistema de arquivos do nosso par.
 
 > NOTA: Você só pode instalar uma versão do código-fonte por nome e versão do chaincode. O código-fonte existe no sistema de arquivos do peer no contexto do nome e da versão do chaincode; é agnóstico de linguagem. Da mesma forma, o contêiner chaincode instanciado refletirá qualquer idioma que tenha sido instalado no peer.
