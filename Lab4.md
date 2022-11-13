@@ -132,9 +132,6 @@ Name: deal, Version: 1.0, Path: github.com/sacc, Id: cd57c948631f3241d19204c3502
 ### Agora vamos instância nosso Chaincode
 Os aplicativos interagem com o ledger blockchain por meio de ```chaincode```. Como tal, precisamos instalar o chaincode em cada peer que irá executar e endossar nossas transações, e então instanciar o chaincode no canal.
 
-Primeiro, instale o código de cadeia Go, Node.js ou Java de amostra no nó peer0 em Org1. Esses comandos colocam o tipo de código-fonte especificado no sistema de arquivos do nosso par.
-
-> NOTA: Você só pode instalar uma versão do código-fonte por nome e versão do chaincode. O código-fonte existe no sistema de arquivos do peer no contexto do nome e da versão do chaincode; é agnóstico de linguagem. Da mesma forma, o contêiner chaincode instanciado refletirá qualquer idioma que tenha sido instalado no peer.
 
 ~~~sh
 # Member Service Provider config path to certificates
@@ -148,6 +145,57 @@ $ export CORE_PEER_ADDRESS=peer0.produtor.sampledomain.com:7051
 
 $ export CHANNEL_NAME=sampledomain-channel
 ~~~
+Em seguida, instancie o chaincode no canal. Isso inicializará o chaincode no canal, definirá a política de endosso para o chaincode e iniciará um contêiner de chaincode para o peer de destino. Observe o argumento ```-P```. Esta é a nossa política onde especificamos o nível de endosso necessário para que uma transação contra este chaincode seja validada.
+
+No comando abaixo, você notará que especificamos nossa política como -P "AND ('ProdutorMSP.peer','TransportadorMSP.peer')". Isso significa que precisamos de “endosso” de um par pertencente a "Produtor" AND "Transportador" (ou seja, dois endossos). Se alterássemos a sintaxe para OR, precisaríamos apenas de um endosso.
+
+
+> NOTA: A instanciação do chaincode do Node.js levará aproximadamente um minuto. O comando não está suspenso; em vez disso, está instalando a camada fabric-shim enquanto a imagem está sendo compilada.
+
+~~~sh
+# certifique-se de substituir a variável de ambiente $CHANNEL_NAME se você não a exportou
+# observe que devemos passar o sinalizador "-l" após o nome do chaincode para identificar o idioma
+
+$ peer chaincode instantiate \
+	-o orderer.sampledomain.com:7050 \
+	--tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/sampledomain.com/orderers/orderer.sampledomain.com/msp/tlscacerts/tlsca.sampledomain.com-cert.pem \
+	-C $CHANNEL_NAME \
+	-n deal \
+	-l node \
+	-v 1.0.1 \
+	-c '{"Args":["init","a", "100", "b","200"]}' \
+	-P "OR('Produtor.peer','Produtor.member')"
+#	-P "OR ('ProdutorMSP.peer','TransportadorMSP.peer')"
+
+~~~
+
+Consulte a documentação de políticas de endosso para obter mais detalhes sobre a implementação de políticas.
+
+Se você quiser que peers adicionais interajam com o ledger, precisará juntá-los ao canal e instalar o mesmo nome, versão e idioma da fonte do chaincode no sistema de arquivos do peer apropriado. Um contêiner de chaincode será lançado para cada peer assim que eles tentarem interagir com esse chaincode específico. Novamente, esteja ciente do fato de que as imagens Node.js serão mais lentas para compilar.
+
+Uma vez que o chaincode tenha sido instanciado no canal, podemos renunciar ao sinalizador l. Precisamos apenas passar o identificador do canal e o nome do chaincode.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 Definido as variáveis. Vamos instânciar nosso chaincode usando o comando ``peer chaincode instantiate``, esse comando inicia o ciclo de vida (lifecycle) para o chaincode. Ele pode demorar um pouco, apenas espere.
 ~~~sh
