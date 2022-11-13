@@ -75,7 +75,7 @@ O comando que passaremos no terminal será esse:
 
 ~~~sh
 
-$ peer chaincode install -l node -n deal -p ../../../chaincode/deal -v 1.0.1
+$ peer chaincode install -n deal -l node -p ../../../chaincode/deal -v 1.0.1
 # -l, --lang                           Language of the chaincode
 # -n, --name string                    Name of the chaincode
 # -p, --path string                    Path to chaincode
@@ -114,7 +114,7 @@ $ peer chaincode list --installed
 Get installed chaincodes on peer:
 
 # Vamos instalar nosso chaincode
-$ peer chaincode install -l node -n deal -p ../../../chaincode/deal -v 1.0.1
+$ peer chaincode install -n deal -l node -p ../../../chaincode/deal -v 1.0.1
 # -l, --lang                           Language of the chaincode
 # -n, --name string                    Name of the chaincode
 # -p, --path string                    Path to chaincode
@@ -126,7 +126,7 @@ $ peer chaincode list --installed
 
 # Se tudo correu bem o resultado será:
 Get installed chaincodes on peer:
-Name: ccForAll, Version: 1.0, Path: github.com/sacc, Id: cd57c948631f3241d19204c3502f2e779ed2a3e1e33e40a9592cf452f9c31a9a
+Name: deal, Version: 1.0, Path: github.com/sacc, Id: cd57c948631f3241d19204c3502f2e779ed2a3e1e33e40a9592cf452f9c31a9a
 ~~~
 
 ### Agora vamos instância nosso Chaincode
@@ -150,8 +150,8 @@ Definido as variáveis. Vamos instânciar nosso chaincode usando o comando ``pee
 # Vide: Endorsement Policies para executar chaincode
 # Esse código está aqui apenas pra consulta
 $ peer chaincode instantiate \
-    -l node \
     -n deal \
+    -l node \
     -o orderer.sampledomain.com:7050 \
     -C $CHANNEL_NAME \
     -c '{"Args":["Mach","50"]}'
@@ -174,8 +174,8 @@ As políticas de endosso (endorsement policy) são extremamente importantes ao e
 Em nosso ``peer0`` vamos executar as políticas de endosso:
 ~~~sh
 $ peer chaincode instantiate \
-    -l node \
     -n deal \
+    -l node \
     -v 1.0.1 \
     -o orderer.sampledomain.com:7050 \
     -C $CHANNEL_NAME \
