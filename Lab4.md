@@ -130,6 +130,7 @@ Name: deal, Version: 1.0, Path: github.com/sacc, Id: cd57c948631f3241d19204c3502
 ~~~
 
 ### Agora vamos instância nosso Chaincode
+Os aplicativos interagem com o ledger blockchain por meio de ```chaincode```. Como tal, precisamos instalar o chaincode em cada peer que irá executar e endossar nossas transações, e então instanciar o chaincode no canal.
 
 ~~~sh
 # Member Service Provider config path to certificates
