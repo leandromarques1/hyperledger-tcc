@@ -176,8 +176,45 @@ Se você quiser que peers adicionais interajam com o ledger, precisará juntá-l
 Uma vez que o chaincode tenha sido instanciado no canal, podemos renunciar ao sinalizador l. Precisamos apenas passar o identificador do canal e o nome do chaincode.
 
 #### Query
+Vamos consultar o valor de "a" para garantir que o chaincode foi instanciado corretamente e o banco de dados de estado foi preenchido. A sintaxe para consulta é a seguinte:
+
+~~~sh
+
+# certifique-se de definir as flags "-C" e "-n" adequadamente 
+$ peer chaincode query -C $CHANNEL_NAME -n mycc -c '{"Args":["query","a"]}'
+
+~~~
+
+
 #### Invoke
+Agora vamos mover 10 de "a" para "b". Esta transação cortará um novo bloco e atualizará o banco de dados de estado. A sintaxe para invocar é a seguinte:
+
+
+~~~sh
+# certifique-se de definir as flags "-C" e "-n" adequadamente
+
+$ peer chaincode invoke \
+	-o orderer.sampledomain.com:7050 \
+	--tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/sampledomain.com/orderers/orderer.sampledomain.com/msp/tlscacerts/tlsca.sampledomain.com-cert.pem -C $CHANNEL_NAME -n mycc --peerAddresses peer0.produtor.sampledomain.com:7051 \
+	--tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/produtor.sampledomain.com/peers/peer0.produtor.sampledomain.com/tls/ca.crt \
+	--peerAddresses peer0.org2.sampledomain.com:9051 \
+	--tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.sampledomain.com/peers/peer0.org2.sampledomain.com/tls/ca.crt \
+	-c '{"Args":["invoke","a","b","10"]}'
+~~~
+
 #### Query
+Vamos confirmar que nossa invocação anterior foi executada corretamente. Inicializamos a chave a com um valor de "100" e apenas removemos "10" com nossa invocação anterior. Portanto, uma consulta em um deve retornar "90". A sintaxe para consulta é a seguinte.
+
+~~~sh
+# certifique-se de definir as flags "-C" e "-n" adequadamente
+
+$ peer chaincode query \
+	-C $CHANNEL_NAME \
+	-n deal \
+	-c '{"Args":["query","a"]}'
+~~~
+
+
 -------------------------------------------------------------------------------------------------------------------
 
 
