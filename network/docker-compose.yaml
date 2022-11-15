@@ -21,28 +21,61 @@ networks:
 
 #Volume: cria uma cópia dos dados que estão no container para a nossa máquina (repositório local)
 volumes:
-  ca.sampledomain.com:
+  ca.produtor.sampledomain.com:
+  ca.transportador.sampledomain.com:
   orderer.sampledomain.com:
+  #=== Produtor ===#
   peer0.produtor.sampledomain.com:
-
+  couchdb.peer0.produtor.sampledomain.com:
+  peer1.produtor.sampledomain.com:
+  couchdb.peer1.produtor.sampledomain.com:
+  #=== Transportador ===#
+  peer0.transportador.sampledomain.com:
+  couchdb.peer0.transportador.sampledomain.com:
+  peer1.transportador.sampledomain.com:
+  couchdb.peer1.transportador.sampledomain.com:
+  #=== Vendedor ===#
+  #peer0.vendedor.sampledomain.com:
+  #couchdb.peer0.vendedor.sampledomain.com:
+  #peer1.vendedor.sampledomain.com:
+  #couchdb.peer1.vendedor.sampledomain.com:
+  
 #SERVICES: informar quais containers serão criados
 #ou seja, quais serão os serviços (services) que o Compose vai subir
 services:
-  ca.sampledomain.com:                      #nome do Serviço
-    container_name: ca.sampledomain.com     #nome do container
-    image: hyperledger/fabric-ca            #imagem que será usada como referência p/ a criação do container
-    environment:                            #variáveis de ambiente
+  ca.produtor.sampledomain.com:                     #nome do Serviço
+    container_name: ca.produtor.sampledomain.com    #nome do container
+    image: hyperledger/fabric-ca                    #imagem que será usada como referência p/ a criação do container
+    environment:                                    #variáveis de ambiente
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
-      - FABRIC_CA_SERVER_CA_NAME=ca.sampledomain.com
+      - FABRIC_CA_SERVER_CA_NAME=ca.produtor.sampledomain.com
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.produtor.sampledomain.com-cert.pem
-      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/649cf9c74d5400a7a605e2366fe15354fc7d4f51b4ded69ecd958c72bb70f5a2_sk
-    ports:                  
+      #- FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/42215d11328cb5dcc2054e4b4652a4174de4bb10e77e593d371a8a178da365a0_sk
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/42215d11328cb5dcc2054e4b4652a4174de4bb10e77e593d371a8a178da365a0_sk
+    ports:
       - "7054:7054"         #portas que o container irá usar (no esquema: {host_port}:{container_port})
     command: sh -c 'fabric-ca-server start -b admin:adminpw'
     volumes:
       - ./crypto-config/peerOrganizations/produtor.sampledomain.com/ca/:/etc/hyperledger/fabric-ca-server-config
     networks:
       - sampleNetwork       #rede pela qual serão feitas as comunicações
+  
+  ca.transportador.sampledomain.com:
+    container_name: ca.transportador.sampledomain.com
+    image: hyperledger/fabric-ca
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca.transportador.sampledomain.com
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.transportador.sampledomain.com-cert.pem
+      #- FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/42215d11328cb5dcc2054e4b4652a4174de4bb10e77e593d371a8a178da365a0_sk
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/42215d11328cb5dcc2054e4b4652a4174de4bb10e77e593d371a8a178da365a0_sk
+    ports:
+      - "8054:7054"
+    command: sh -c 'fabric-ca-server start -b admin:adminpw'
+    volumes:
+      - ./crypto-config/peerOrganizations/transportador.sampledomain.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    networks:
+      - sampleNetwork
 
   orderer.sampledomain.com:
     container_name: orderer.sampledomain.com
@@ -65,6 +98,7 @@ services:
     networks:
       - sampleNetwork
 
+  #=== Produtor ===#
   peer0.produtor.sampledomain.com:
     container_name: peer0.produtor.sampledomain.com
     image: hyperledger/fabric-peer
@@ -77,6 +111,10 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
       - CORE_PEER_ADDRESS=peer0.produtor.sampledomain.com:7051
       - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=network_sampleNetwork
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.peer0.produtor.sampledomain.com:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=peer0.produtor
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=password
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric
     command: peer node start
     # command: peer node start --peer-chaincodedev=true
@@ -92,6 +130,154 @@ services:
       - orderer.sampledomain.com
     networks:
       - sampleNetwork
+
+  peer1.produtor.sampledomain.com:
+    container_name: peer1.produtor.sampledomain.com
+    image: hyperledger/fabric-peer
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_PEER_ID=peer1.produtor.sampledomain.com
+      - CORE_LOGGING_PEER=info
+      - CORE_CHAINCODE_LOGGING=debug
+      - CORE_PEER_LOCALMSPID=ProdutorMSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
+      - CORE_PEER_ADDRESS=peer1.produtor.sampledomain.com:7051
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=network_sampleNetwork
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.peer1.produtor.sampledomain.com:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=peer1.produtor
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=password
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: peer node start
+    ports:
+      - 8051:7051
+      - 8053:7053
+    volumes:
+      - /var/run/:/host/var/run/
+      - ./crypto-config/peerOrganizations/produtor.sampledomain.com/peers/peer1.produtor.sampledomain.com/msp:/etc/hyperledger/msp/peer
+      - ./crypto-config/peerOrganizations/produtor.sampledomain.com/users:/etc/hyperledger/msp/users
+      - ./channel-artifacts:/etc/hyperledger/configtx
+    depends_on:
+      - orderer.sampledomain.com
+    networks:
+      - sampleNetwork
+
+  couchdb.peer0.produtor.sampledomain.com:
+    container_name: couchdb.peer0.produtor.sampledomain.com
+    environment:
+      - COUCHDB_USER=peer0.produtor
+      - COUCHDB_PASSWORD=password
+    image: hyperledger/fabric-couchdb
+    ports: 
+      - 5984:5984
+    networks: 
+      - sampleNetwork
+
+  couchdb.peer1.produtor.sampledomain.com:
+    container_name: couchdb.peer1.produtor.sampledomain.com
+    environment:
+      - COUCHDB_USER=peer1.produtor
+      - COUCHDB_PASSWORD=password
+    image: hyperledger/fabric-couchdb
+    ports: 
+      - 6984:5984
+    networks: 
+      - sampleNetwork
+
+  #=== Transportador ===#
+  peer0.transportador.sampledomain.com:
+    container_name: peer0.transportador.sampledomain.com
+    image: hyperledger/fabric-peer
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_PEER_ID=peer0.transportador.sampledomain.com
+      - FABRIC_LOGGING_SPEC=info
+      - CORE_CHAINCODE_LOGGING_LEVEL=info
+      - CORE_PEER_LOCALMSPID=TransportadorMSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
+      - CORE_PEER_ADDRESS=peer0.transportador.sampledomain.com:7051
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=network_sampleNetwork
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.peer0.transportador.sampledomain.com:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=peer0.transportador
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=password
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: peer node start
+    # command: peer node start --peer-chaincodedev=true
+    ports:
+      - 9051:7051
+      - 9053:7053
+    volumes:
+      - /var/run/:/host/var/run/
+      - ./crypto-config/peerOrganizations/transportador.sampledomain.com/peers/peer0.transportador.sampledomain.com/msp:/etc/hyperledger/msp/peer
+      - ./crypto-config/peerOrganizations/transportador.sampledomain.com/users:/etc/hyperledger/msp/users
+      - ./channel-artifacts:/etc/hyperledger/configtx
+    depends_on:
+      - orderer.sampledomain.com
+      - couchdb.peer0.transportador.sampledomain.com
+    networks:
+      - sampleNetwork
+
+  peer1.transportador.sampledomain.com:
+    container_name: peer1.transportador.sampledomain.com
+    image: hyperledger/fabric-peer
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_PEER_ID=peer1.transportador.sampledomain.com
+      - FABRIC_LOGGING_SPEC=info
+      - CORE_CHAINCODE_LOGGING_LEVEL=info
+      - CORE_PEER_LOCALMSPID=TransportadorMSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
+      - CORE_PEER_ADDRESS=peer1.transportador.sampledomain.com:7051
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=network_sampleNetwork
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.peer1.transportador.sampledomain.com:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=peer1.transportador
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=password
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: peer node start
+    # command: peer node start --peer-chaincodedev=true
+    ports:
+      - 10051:7051
+      - 10053:7053
+    volumes:
+      - /var/run/:/host/var/run/
+      - ./crypto-config/peerOrganizations/transportador.sampledomain.com/peers/peer1.transportador.sampledomain.com/msp:/etc/hyperledger/msp/peer
+      - ./crypto-config/peerOrganizations/transportador.sampledomain.com/users:/etc/hyperledger/msp/users
+      - ./channel-artifacts:/etc/hyperledger/configtx
+    depends_on:
+      - orderer.sampledomain.com
+      - couchdb.peer1.transportador.sampledomain.com
+    networks:
+      - sampleNetwork
+
+  couchdb.peer0.transportador.sampledomain.com:
+    container_name: couchdb.peer0.transportador.sampledomain.com
+    environment:
+      - COUCHDB_USER=peer0.transportador
+      - COUCHDB_PASSWORD=password
+    image: hyperledger/fabric-couchdb
+    ports:
+      - 7984:5984
+    networks:
+      - sampleNetwork
+
+  couchdb.peer1.transportador.sampledomain.com:
+    container_name: couchdb.peer1.transportador.sampledomain.com
+    environment:
+      - COUCHDB_USER=peer1.transportador
+      - COUCHDB_PASSWORD=password
+    image: hyperledger/fabric-couchdb
+    ports:
+      - 8984:5984
+    networks:
+      - sampleNetwork
+  
+  #=== Vendedor ===#
+  #peer0.vendedor.sampledomain.com:
+  #couchdb.peer0.vendedor.sampledomain.com:
+  #peer1.vendedor.sampledomain.com:
+  #couchdb.peer1.vendedor.sampledomain.com:
 
   cli:                #CLI: container que permite acessar cada nó participante da rede                         
     container_name: cli
@@ -118,3 +304,8 @@ services:
     depends_on:
       - orderer.sampledomain.com
       - peer0.produtor.sampledomain.com
+      - peer1.produtor.sampledomain.com
+      - peer0.transportador.sampledomain.com
+      - peer1.transportador.sampledomain.com
+      #- peer0.vendedor.sampledomain.com
+      #- peer1.vendedor.sampledomain.com
