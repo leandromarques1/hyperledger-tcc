@@ -125,50 +125,44 @@ $ peer chaincode list --installed
 # Se tudo correr bem, o resultado será parecido com esse:
 #	Get installed chaincodes on peer:
 #	Name: chaincode_example02, Version: 1.0.0, Path: ../../../chaincode/chaincode_example02_teste, Id: 6748193f695db02e265fe58f9cc614dd4b3145e4d2f7a11683111b09c5c45f94
-~~
+~~~
 
 ### PASSO 5: Instanciar o Chaincode - parte 1
 ~~~sh
-	# primeiro: precisamos instalar o chaincode em cada peer que irá executar e endossar nossas transações
-	# segundo: instanciar nosso chaincode no canal
-	# qualquer PEER pode ser usado para essa Instanciação
-	# para esse caso, vamos usar o peer0
+# primeiro: precisamos instalar o chaincode em cada peer que irá executar e endossar nossas transações
+# segundo: instanciar nosso chaincode no canal
+# qualquer PEER pode ser usado para essa Instanciação
+# para esse caso, vamos usar o peer0
 
+#===== PEER0 de Produtor =====#
+# Configurando Variáveis de Ambiente para "PEER0" para Produtor
+$ export CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/produtor.sampledomain.com/users/Admin\@produtor.sampledomain.com/msp/
+$ export CORE_PEER_LOCALMSPID=ProdutorMSP
+$ export CORE_PEER_ADDRESS=peer0.produtor.sampledomain.com:7051
+$ export CHANNEL_NAME=sampledomain-channel
 
+# Antes de instalar, faça uma verificação.
+$ peer chaincode list --instantiated -C $CHANNEL_NAME
+# Se as variáreis foram definidas corretamente teremos o seguinte resultado:
+#	Get instantiated chaincodes on channel sampledomain-channel:
 
-	#===== PEER0 de Produtor =====#
-		# Configurando Variáveis de Ambiente para "PEER0" para Produtor
-		$ export CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/produtor.sampledomain.com/users/Admin\@produtor.sampledomain.com/msp/
-		
-		$ export CORE_PEER_LOCALMSPID=ProdutorMSP
-		
-		$ export CORE_PEER_ADDRESS=peer0.produtor.sampledomain.com:7051
-		
-		$ export CHANNEL_NAME=sampledomain-channel
+$ peer chaincode instantiate \
+	-o orderer.sampledomain.com:7050 \
+	-C $CHANNEL_NAME \
+	-n chaincode_example02 \
+	-l node \
+	-v 1.0.0 \
+	-c '{"Args":["init","a", "100", "b","200"]}' \
+	-P "AND ('ProdutorMSP.peer','TransportadorMSP.peer')"
 
-		# Antes de instalar, faça uma verificação.
-		$ peer chaincode list --instantiated -C $CHANNEL_NAME
-			# Se as variáreis foram definidas corretamente teremos o seguinte resultado:
-			Get instantiated chaincodes on channel sampledomain-channel:
+# Para confirmar a Instanciação no nosso Canal
+$ peer chaincode list --instantiated -C $CHANNEL_NAME
+# Se as variáreis foram definidas corretamente teremos o seguinte resultado:
+#	Get instantiated chaincodes on channel sampledomain-channel:
+#	Name: chaincode_example02, Version: 1.0.0, Path: ../../../chaincode/chaincode_example02_teste, Escc: escc, Vscc: vscc
 
-		$ peer chaincode instantiate \
-			-o orderer.sampledomain.com:7050 \
-			-C $CHANNEL_NAME \
-			-n chaincode_example02 \
-			-l node \
-			-v 1.0.0 \
-			-c '{"Args":["init","a", "100", "b","200"]}' \
-			-P "AND ('ProdutorMSP.peer','TransportadorMSP.peer')"
-
-		# Para confirmar a Instanciação no nosso Canal
-		$ peer chaincode list --instantiated -C $CHANNEL_NAME
-			# Se as variáreis foram definidas corretamente teremos o seguinte resultado:
-			Get instantiated chaincodes on channel sampledomain-channel:
-			Name: chaincode_example02, Version: 1.0.0, Path: ../../../chaincode/chaincode_example02_teste, Escc: escc, Vscc: vscc
-
-	
-
-	# O chaincode é então “instanciado” no $CHANNEL_NAME. A instanciação adiciona o chaincode ao canal, inicia o contêiner para o peer de destino e inicializa os pares de valores-chave associados ao chaincode. Os valores iniciais para este exemplo são [“a”,”100” “b”,”200”]. Essa “instanciação” resulta em um CONTAINER com o nome "dev-peer0.produtor.sampledomain.com-chaincode_example02-1.0.0" iniciando.
+~~~	
+O chaincode é então “instanciado” no $CHANNEL_NAME. A instanciação adiciona o chaincode ao canal, inicia o contêiner para o peer de destino e inicializa os pares de valores-chave associados ao chaincode. Os valores iniciais para este exemplo são [“a”,”100” “b”,”200”]. Essa “instanciação” resulta em um CONTAINER com o nome "dev-peer0.produtor.sampledomain.com-chaincode_example02-1.0.0" iniciando.
 		# IMPORTANTE: esse deve ser o processo de DEPLOY do SMART CONTRACT !!!!
 		# Atenção ao "logs" desse container
 		# para executar comando abaixo, deve sair do CLI (apertar Ctrl+D)
