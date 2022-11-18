@@ -113,14 +113,12 @@ $ peer channel list
 #	Channels peers has joined:
 #	sampledomain-channel
 
-	#========= PEER0 de Transportador =========#
-		# Variáveis de Ambiente para PEER0
-		$ CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/transportador.sampledomain.com/users/Admin@transportador.sampledomain.com/msp
-		
-		$ CORE_PEER_LOCALMSPID=TransportadorMSP
-
-		$ CORE_PEER_ADDRESS=peer0.transportador.sampledomain.com:7051
-			#Obs.: não importa a Organização, só funciona quando coloco a porta "7051" (por que será? porque foi definido como sendo a PORTA DO CONTAINER)
+#========= PEER0 de Transportador =========#
+# Variáveis de Ambiente para PEER0
+$ CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/transportador.sampledomain.com/users/Admin@transportador.sampledomain.com/msp
+$ CORE_PEER_LOCALMSPID=TransportadorMSP
+$ CORE_PEER_ADDRESS=peer0.transportador.sampledomain.com:7051
+#Obs.: não importa a Organização, só funciona quando coloco a porta "7051" (por que será? porque foi definido como sendo a PORTA DO CONTAINER)
 
 		# antes de juntar, verificar o canal criado
 			$ peer channel list
