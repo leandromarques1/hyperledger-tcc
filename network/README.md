@@ -142,21 +142,21 @@ $ CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/cry
 $ CORE_PEER_LOCALMSPID=TransportadorMSP
 $ CORE_PEER_ADDRESS=peer1.transportador.sampledomain.com:7051
 
-		# antes de juntar, verificar o canal criado
-			$ peer channel list
-			# saida esperada
-				Channels peers has joined:
+# antes de juntar, verificar o canal criado
+$ peer channel list
+# saida esperada
+#	Channels peers has joined:
 
-		# Adicionar o peer0 de Transportador ao canal
-			$ peer channel join -b $CHANNEL_NAME.block
+# Adicionar o peer0 de Transportador ao canal
+$ peer channel join -b $CHANNEL_NAME.block
 
-		# Verificar o canal criado
-			$ peer channel list
-			# saida esperada
-				Channels peers has joined:
-				sampledomain-channel
+# Verificar o canal criado
+$ peer channel list
+# saida esperada
+#	Channels peers has joined:
+#		sampledomain-channel
 
-
+~~~
 
 
 PASSO 6: Atualizar Anchor Peer no Canal
