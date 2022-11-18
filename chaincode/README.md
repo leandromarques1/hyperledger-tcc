@@ -162,30 +162,30 @@ $ peer chaincode list --instantiated -C $CHANNEL_NAME
 #	Name: chaincode_example02, Version: 1.0.0, Path: ../../../chaincode/chaincode_example02_teste, Escc: escc, Vscc: vscc
 
 ~~~	
+
 O chaincode é então “instanciado” no $CHANNEL_NAME. A instanciação adiciona o chaincode ao canal, inicia o contêiner para o peer de destino e inicializa os pares de valores-chave associados ao chaincode. Os valores iniciais para este exemplo são [“a”,”100” “b”,”200”]. Essa “instanciação” resulta em um CONTAINER com o nome "dev-peer0.produtor.sampledomain.com-chaincode_example02-1.0.0" iniciando.
-# IMPORTANTE: esse deve ser o processo de DEPLOY do SMART CONTRACT !!!!
-# Atenção ao "logs" desse container
+IMPORTANTE: esse deve ser o processo de DEPLOY do SMART CONTRACT !!!!
+-Atenção ao "logs" desse container
+~~~sh
 # para executar comando abaixo, deve sair do CLI (apertar Ctrl+D)
 $ docker logs dev-peer0.produtor.sampledomain.com-chaincode_example02-1.0.0
 
 #a saida deverá ser mais ou menos essa
-	> chaincode_example02@1.0.0 start /usr/local/src
-	> node chaincode_example02.js "--peer.address" "peer0.produtor.sampledomain.com:7052"
-
-			2022-11-15T18:59:55.159Z info [shim:lib/chaincode.js]                             Registering with peer peer0.produtor.sampledomain.com:7052 as chaincode "chaincode_example02:1.0.0"
-
-			2022-11-15T18:59:55.224Z info [shim:lib/handler.js]                               Successfully registered with peer node. State transferred to "established"
-					
-			2022-11-15T18:59:55.226Z info [shim:lib/handler.js]                               Successfully established communication with peer node. State transferred to "ready"
-			========= example02 Init =========
-			{ fcn: 'init', params: [ 'a', '100', 'b', '200' ] }
-					
-			2022-11-15T18:59:55.267Z info [shim:lib/handler.js]                               [sampledomain-channel-bf535583] Calling chaincode Init() succeeded. Sending COMPLETED message back to peer
-
-
-		# esse é o tão famoso DEPLOY do SmartContract!!! 
-			--> será???
 ~~~
+><br> chaincode_example02@1.0.0 start /usr/local/src
+><br> node chaincode_example02.js "--peer.address" "peer0.produtor.sampledomain.com:7052"
+
+><br> 2022-11-15T18:59:55.159Z info [shim:lib/chaincode.js]                             Registering with peer peer0.produtor.sampledomain.com:7052 as chaincode "chaincode_example02:1.0.0"
+><br> 2022-11-15T18:59:55.224Z info [shim:lib/handler.js]                               Successfully registered with peer node. State transferred to "established"			
+><br> 2022-11-15T18:59:55.226Z info [shim:lib/handler.js]                               Successfully established communication with peer node. State transferred to "ready"
+><br>========= example02 Init =========
+><br>{ fcn: 'init', params: [ 'a', '100', 'b', '200' ] }
+					
+><br>2022-11-15T18:59:55.267Z info [shim:lib/handler.js]                               [sampledomain-channel-bf535583] Calling chaincode Init() succeeded. Sending COMPLETED message back to peer
+
+><br># esse é o tão famoso DEPLOY do SmartContract!!! 
+><br>	--> será???
+
 
 ### PASSO 6: Verificar métodos do Chaincode
 ~~~sh
@@ -379,12 +379,9 @@ Para uma informação mais gráfica e bonita, veja o Docker Desktop
 
 
 
-#### IMPORTANTE
+### IMPORTANTE
 um resumo de tudo isso
 	https://hyperledger-fabric.readthedocs.io/en/release-1.4/build_network.html#what-s-happening-behind-the-scenes
 
 
 
-
-==========================================================================================
-PARTE 2: fazer o mesmo processo acima para Marbles02
