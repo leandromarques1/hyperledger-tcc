@@ -357,10 +357,10 @@ $ docker logs dev-peer0.transportador.sampledomain.com-chaincode_example02-1.0.0
 $ docker logs dev-peer0.produtor.sampledomain.com-chaincode_example02-1.0.0
 ~~~	
 >	04:31:10.569 [BCCSP_FACTORY] DEBU : Initialize BCCSP [SW]
->	ex02 Invoke
->	Query Response:{"Name":"a","Amount":"100"}
->	ex02 Invoke
->	Aval = 90, Bval = 210
+><br>	ex02 Invoke
+><br>	Query Response:{"Name":"a","Amount":"100"}
+><br>	ex02 Invoke
+><br>	Aval = 90, Bval = 210
 ~~~sh
 $ docker logs dev-peer1.transportador.sampledomain.com-chaincode_example02-1.0.0
 ~~~
