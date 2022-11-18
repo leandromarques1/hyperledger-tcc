@@ -5,64 +5,68 @@ Obs.: Essa passo-a-passo só funcionará se a Organização "Transportador" esti
 ### PASSO 1: atualizar CLI e acessá-lo
 ~~~sh
 # Atualiza cliente fabric-tool
-	$ docker-compose -f docker-compose.yaml up -d cli
+$ docker-compose -f docker-compose.yaml up -d cli
 
-	# Acessa contêiner
-	$ docker exec -it cli bash
+# Acessar contêiner
+$ docker exec -it cli bash
 ~~~
 
 ### PASSO 2: Criação da Pasta (estando dentro de "CLI")
-	$ cd ../../../
-	$ cd chaincode
-	$ ls -l
-	$ mkdir chaincode_example02_teste
-	$ cd chaincode_example02_teste
+~~~sh
+$ cd ../../../
+$ cd chaincode
+$ ls -l
+$ mkdir chaincode_example02_teste
+$ cd chaincode_example02_teste
 	
-	# create a new node project
-	$ npm init
+# create a new node project
+$ npm init
 	
-	# install fabric-shim at main branch
-	# $ npm install fabric-shim@2.4.1
+# install fabric-shim at main branch
+# $ npm install fabric-shim@2.4.1
 	
-	# or using the released version
-	$ npm install fabric-shim
+# or using the released version
+$ npm install fabric-shim
 	
-	$ touch chaincode_example02.js
+$ touch chaincode_example02.js
+~~~
 
 ### PASSO 3: criar e editar arquivos
-	#criar arquivo com código do chaincode
-	$ cat > chaincode_example02.js
-		# ao apertar "enter" a partir da linha de baixo já pode escrever.
-		# escrever ou colar código do chaincode aqui (verificar em "fabric-samples/chaincode/chaincode_example02/node/chaincode_example02.js")
-		# para sair e salvar, é só apertar Ctrl+Z
+~~~sh~~~
+#criar arquivo com código do chaincode
+$ cat > chaincode_example02.js
+# ao apertar "enter" a partir da linha de baixo já pode escrever.
+# escrever ou colar código do chaincode aqui (verificar em "fabric-samples/chaincode/chaincode_example02/node/chaincode_example02.js")
+# para sair e salvar, é só apertar Ctrl+Z
 
-	#para verificar arquivo criado
-	$ ls -l
+#para verificar arquivo criado
+$ ls -l
 
-	#criar arquivo 'package.json'
-	# rm package.json
-	$ cat > package.json
-		# escrever ou colar "package.json" aqui
-		# escrever ou colar código do chaincode aqui (verificar em "fabric-samples/chaincode/chaincode_example02/node/package.json")
-		# IMPORTANTE: atenção com a "versão" do código 
-		# para sair e salvar, é só apertar ctrl+Z
+#criar arquivo 'package.json'
+$ rm package.json
+$ cat > package.json
+# escrever ou colar "package.json" aqui
+# escrever ou colar código do chaincode aqui (verificar em "fabric-samples/chaincode/chaincode_example02/node/package.json")
+# IMPORTANTE: atenção com a "versão" do código 
+# para sair e salvar, é só apertar ctrl+Z
 
-	#para verificar arquivo criado
-	$ ls -l
+#para verificar arquivo criado
+$ ls -l
 
-	#para ler qualquer arquivo, basta usar o comando abaixo
-	$ cat chaincode_example02.js
-	$ cat package.json
+#para ler qualquer arquivo, basta usar o comando abaixo
+$ cat chaincode_example02.js
+$ cat package.json
+~~~
 
 ### PASSO 4: instalar Chaincode - parte 1 
+~~~sh
+# focar em instalar Chaincode para PEER0 de Produtor e Transportador
 
-	# focar em instalar Chaincode para PEER0 de Produtor e Transportador
-
-	#voltar para onde o CLI está: "hyperledger/fabric/peer"
-	$ cd ../../hyperledger/fabric/peer
+#voltar para onde o CLI está: "hyperledger/fabric/peer"
+$ cd ../../hyperledger/fabric/peer
 
 	
-	#===== PEER0 de Produtor =====#
+#===== PEER0 de Produtor =====#
 		# Preparar Ambiente para a instalação em PEER0
 		# Configurando variáveis de Ambiente 
 		$ export CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/produtor.sampledomain.com/users/Admin\@produtor.sampledomain.com/msp/
@@ -134,9 +138,9 @@ Obs.: Essa passo-a-passo só funcionará se a Organização "Transportador" esti
 
 
 		#Obs.: se der problemas, um dos possíveis otivos pode ser a porta 9051
-
+~~~
 ### PASSO 5: Instanciar o Chaincode - parte 1
-
+~~~sh
 	# primeiro: precisamos instalar o chaincode em cada peer que irá executar e endossar nossas transações
 	# segundo: instanciar nosso chaincode no canal
 	# qualquer PEER pode ser usado para essa Instanciação
@@ -199,9 +203,11 @@ Obs.: Essa passo-a-passo só funcionará se a Organização "Transportador" esti
 
 		# esse é o tão famoso DEPLOY do SmartContract!!! 
 			--> será???
+~~~
 
 ### PASSO 6: Verificar métodos do Chaincode
-	# Vamos consultar o valor de a para ter certeza de que o chaincode foi instanciado corretamente e o banco de dados de estado foi preenchido.
+~~~sh
+# Vamos consultar o valor de a para ter certeza de que o chaincode foi instanciado corretamente e o banco de dados de estado foi preenchido.
 	$ peer chaincode query \
 		-C $CHANNEL_NAME \
 		-n chaincode_example02 \
@@ -300,6 +306,7 @@ Obs.: Essa passo-a-passo só funcionará se a Organização "Transportador" esti
 				# Se tudo correr bem, o resultado será parecido com esse:
 					Get installed chaincodes on peer:
 					Name: deal, Version: 1.0, Path: github.com/sacc, Id: cd57c948631f3241d19204c3502f2e779ed2a3e1e33e40a9592cf452f9c31a9a
+~~~
 
 ### PASSO 8: Verificar métodos do Chaincode - parte 2
 	# peer1 em Transportador deve primeiro ingressar no canal antes de poder responder às consultas. O canal pode ser associado emitindo o seguinte comando:
