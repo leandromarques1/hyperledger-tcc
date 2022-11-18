@@ -2,14 +2,16 @@
 
 Obs.: Essa passo-a-passo só funcionará se a Organização "Transportador" estiver já implementada. Verificar isso antes de começar esse passo a passo
 
-PASSO 1: atualizar CLI e acessá-lo
-	# Atualiza cliente fabric-tool
+### PASSO 1: atualizar CLI e acessá-lo
+~~~sh
+# Atualiza cliente fabric-tool
 	$ docker-compose -f docker-compose.yaml up -d cli
 
 	# Acessa contêiner
 	$ docker exec -it cli bash
+~~~
 
-PASSO 2: Criação da Pasta (estando dentro de "CLI")
+### PASSO 2: Criação da Pasta (estando dentro de "CLI")
 	$ cd ../../../
 	$ cd chaincode
 	$ ls -l
@@ -27,7 +29,7 @@ PASSO 2: Criação da Pasta (estando dentro de "CLI")
 	
 	$ touch chaincode_example02.js
 
-PASSO 3: criar e editar arquivos
+### PASSO 3: criar e editar arquivos
 	#criar arquivo com código do chaincode
 	$ cat > chaincode_example02.js
 		# ao apertar "enter" a partir da linha de baixo já pode escrever.
@@ -52,7 +54,7 @@ PASSO 3: criar e editar arquivos
 	$ cat chaincode_example02.js
 	$ cat package.json
 
-PASSO 4: instalar Chaincode - parte 1 
+### PASSO 4: instalar Chaincode - parte 1 
 
 	# focar em instalar Chaincode para PEER0 de Produtor e Transportador
 
@@ -133,7 +135,7 @@ PASSO 4: instalar Chaincode - parte 1
 
 		#Obs.: se der problemas, um dos possíveis otivos pode ser a porta 9051
 
-PASSO 5: Instanciar o Chaincode - parte 1
+### PASSO 5: Instanciar o Chaincode - parte 1
 
 	# primeiro: precisamos instalar o chaincode em cada peer que irá executar e endossar nossas transações
 	# segundo: instanciar nosso chaincode no canal
@@ -198,7 +200,7 @@ PASSO 5: Instanciar o Chaincode - parte 1
 		# esse é o tão famoso DEPLOY do SmartContract!!! 
 			--> será???
 
-PASSO 6: Verificar métodos do Chaincode
+### PASSO 6: Verificar métodos do Chaincode
 	# Vamos consultar o valor de a para ter certeza de que o chaincode foi instanciado corretamente e o banco de dados de estado foi preenchido.
 	$ peer chaincode query \
 		-C $CHANNEL_NAME \
@@ -229,7 +231,7 @@ PASSO 6: Verificar métodos do Chaincode
 
 	## ATENÇÃO aos novos containers que foram sendo criados!!!
 
-PASSO 7: instalar Chaincode - parte 2 
+### PASSO 7: instalar Chaincode - parte 2 
 
 	#Pela documentação, fala sobre instalar Chaincode no PEER1 de Transportador (achei estranho...)
 
@@ -299,7 +301,7 @@ PASSO 7: instalar Chaincode - parte 2
 					Get installed chaincodes on peer:
 					Name: deal, Version: 1.0, Path: github.com/sacc, Id: cd57c948631f3241d19204c3502f2e779ed2a3e1e33e40a9592cf452f9c31a9a
 
-PASSO 8: Verificar métodos do Chaincode - parte 2
+### PASSO 8: Verificar métodos do Chaincode - parte 2
 	# peer1 em Transportador deve primeiro ingressar no canal antes de poder responder às consultas. O canal pode ser associado emitindo o seguinte comando:
 
 	$ export CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/transportador.sampledomain.com/users/Admin@transportador.sampledomain.com/msp CORE_PEER_ADDRESS=peer1.transportador.sampledomain.com:7051 
@@ -388,7 +390,8 @@ PASSO 9: Logs
 
 
 
-IMPORTANTE: um resumo de tudo isso
+#### IMPORTANTE
+um resumo de tudo isso
 	https://hyperledger-fabric.readthedocs.io/en/release-1.4/build_network.html#what-s-happening-behind-the-scenes
 
 
