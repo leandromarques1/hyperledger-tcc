@@ -329,43 +329,48 @@ $ peer chaincode invoke \
 ~~~
 
 ### PASSO 9: Logs
-	# "logs" servem para VISUALIZAR essas transações
+~~~sh
+# "logs" servem para VISUALIZAR essas transações
 
-	# Verifique os logs do contêiner do CLI Docker.
-	$ docker logs -f cli
+# Verifique os logs do contêiner do CLI Docker.
+$ docker logs -f cli
 
-	#possivelmente, a saida será parecida com essa:
-		2017-05-16 17:08:01.366 UTC [msp] GetLocalMSP -> DEBU 004 Returning existing local MSP
-		2017-05-16 17:08:01.366 UTC [msp] GetDefaultSigningIdentity -> DEBU 005 Obtaining default signing identity
-		2017-05-16 17:08:01.366 UTC [msp/identity] Sign -> DEBU 006 Sign: plaintext: 0AB1070A6708031A0C08F1E3ECC80510...6D7963631A0A0A0571756572790A0161
-		2017-05-16 17:08:01.367 UTC [msp/identity] Sign -> DEBU 007 Sign: digest: E61DB37F4E8B0D32C9FE10E3936BA9B8CD278FAA1F3320B08712164248285C54
-		Query Result: 90
-		2017-05-16 17:08:15.158 UTC [main] main -> INFO 008 Exiting.....
+#possivelmente, a saida será parecida com essa:
+~~~
+>	2017-05-16 17:08:01.366 UTC [msp] GetLocalMSP -> DEBU 004 Returning existing local MSP
+	2017-05-16 17:08:01.366 UTC [msp] GetDefaultSigningIdentity -> DEBU 005 Obtaining default signing identity
+	2017-05-16 17:08:01.366 UTC [msp/identity] Sign -> DEBU 006 Sign: plaintext: 0AB1070A6708031A0C08F1E3ECC80510...6D7963631A0A0A0571756572790A0161
+	2017-05-16 17:08:01.367 UTC [msp/identity] Sign -> DEBU 007 Sign: digest: E61DB37F4E8B0D32C9FE10E3936BA9B8CD278FAA1F3320B08712164248285C54
+	Query Result: 90
+	2017-05-16 17:08:15.158 UTC [main] main -> INFO 008 Exiting.....
+~~~sh
+# para visualizar os logs dos Chaincodes 
+# Inspecione os contêineres de chaincode individuais para ver as transações separadas executadas em cada contêiner. Aqui está a saída combinada de cada contêiner:
+
+$ docker logs dev-peer0.transportador.sampledomain.com-chaincode_example02-1.0.0
+~~~
+>	04:30:45.947 [BCCSP_FACTORY] DEBU : Initialize BCCSP [SW]
+	ex02 Init
+	Aval = 100, Bval = 200
+
+~~~sh
+$ docker logs dev-peer0.produtor.sampledomain.com-chaincode_example02-1.0.0
+~~~	
+>	04:31:10.569 [BCCSP_FACTORY] DEBU : Initialize BCCSP [SW]
+	ex02 Invoke
+	Query Response:{"Name":"a","Amount":"100"}
+	ex02 Invoke
+	Aval = 90, Bval = 210
+~~~sh
+$ docker logs dev-peer1.transportador.sampledomain.com-chaincode_example02-1.0.0
+~~~
+>	04:31:30.420 [BCCSP_FACTORY] DEBU : Initialize BCCSP [SW]
+	ex02 Invoke
+	Query Response:{"Name":"a","Amount":"90"}
 
 
-	# para visualizar os logs dos Chaincodes 
-	# Inspecione os contêineres de chaincode individuais para ver as transações separadas executadas em cada contêiner. Aqui está a saída combinada de cada contêiner:
 
-	$ docker logs dev-peer0.transportador.sampledomain.com-chaincode_example02-1.0.0
-		04:30:45.947 [BCCSP_FACTORY] DEBU : Initialize BCCSP [SW]
-		ex02 Init
-		Aval = 100, Bval = 200
-
-	$ docker logs dev-peer0.produtor.sampledomain.com-chaincode_example02-1.0.0
-		04:31:10.569 [BCCSP_FACTORY] DEBU : Initialize BCCSP [SW]
-		ex02 Invoke
-		Query Response:{"Name":"a","Amount":"100"}
-		ex02 Invoke
-		Aval = 90, Bval = 210
-
-	$ docker logs dev-peer1.transportador.sampledomain.com-chaincode_example02-1.0.0
-		04:31:30.420 [BCCSP_FACTORY] DEBU : Initialize BCCSP [SW]
-		ex02 Invoke
-		Query Response:{"Name":"a","Amount":"90"}
-
-
-
-	#Para uma informação mais gráfica e bonita, veja o Docker Desktop
+Para uma informação mais gráfica e bonita, veja o Docker Desktop
 
 
 
