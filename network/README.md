@@ -5,7 +5,7 @@
 
 Depois de instalar Fabric-Samples e Baixar crypto-config, confgtx e docker-compose
 
-PASSO 1: acesse a pasta "network" e preparando ambiente
+### PASSO 1: acesse a pasta "network" e preparando ambiente
 ~~~sh
 # Acessando diretório dos arquivos
 $ cd network
@@ -21,25 +21,27 @@ $ rm -rf crypto-config channel-artifacts
 $ mkdir crypto-config channel-artifacts
 ~~~
 
-PASSO 2: gerando material criptográfico dos Participantes
-	# Após a execução do comando será criada a pasta "crypto-config"
-	$ cryptogen generate --config=./crypto-config.yaml
+### PASSO 2: gerando material criptográfico dos Participantes
+~~~sh
+# Após a execução do comando será criada a pasta "crypto-config"
+$ cryptogen generate --config=./crypto-config.yaml
+~~~	
+
+### PASSO 3: criando Bloco Genesis e configuração de Canal
+~~~sh
+#Todos esses artefatos serão gerados na pasta "channel-artifacts", dentro de "network"
+
+#=== Bloco Genesis ===#
+$ configtxgen -profile OrgsOrdererGenesis -outputBlock ./channel-artifacts/genesis.block
 	
+#=== Canal ===#
+$ configtxgen -profile OrgChannel -outputCreateChannelTx ./channel-artifacts/channel.tx -channelID $CHANNEL_NAME
 
-PASSO 3: criando Bloco Genesis e configuração de Canal
-	#Todos esses artefatos serão gerados na pasta "channel-artifacts", dentro de "network"
+#=== Organizações ===#
+$ configtxgen -profile OrgChannel -outputAnchorPeersUpdate ./channel-artifacts/ProdutorMSPanchors.tx -channelID $CHANNEL_NAME -asOrg ProdutorMSP
 
-	#=== Bloco Genesis ===#
-	$ configtxgen -profile OrgsOrdererGenesis -outputBlock ./channel-artifacts/genesis.block
-	
-	#=== Canal ===#
-	$ configtxgen -profile OrgChannel -outputCreateChannelTx ./channel-artifacts/channel.tx -channelID $CHANNEL_NAME
-
-	#=== Organizações ===#
-	$ configtxgen -profile OrgChannel -outputAnchorPeersUpdate ./channel-artifacts/ProdutorMSPanchors.tx -channelID $CHANNEL_NAME -asOrg ProdutorMSP
-
-	$ configtxgen -profile OrgChannel -outputAnchorPeersUpdate ./channel-artifacts/TransportadorMSPanchors.tx -channelID $CHANNEL_NAME -asOrg TransportadorMSP
-
+$ configtxgen -profile OrgChannel -outputAnchorPeersUpdate ./channel-artifacts/TransportadorMSPanchors.tx -channelID $CHANNEL_NAME -asOrg TransportadorMSP
+~~~
 
 PASSO 4: Iniciar Containers
 	# Para e limpa todos os containers existentes
