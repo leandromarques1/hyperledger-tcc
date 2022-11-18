@@ -67,78 +67,66 @@ $ cd ../../hyperledger/fabric/peer
 
 	
 #===== PEER0 de Produtor =====#
-		# Preparar Ambiente para a instalação em PEER0
-		# Configurando variáveis de Ambiente 
-		$ export CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/produtor.sampledomain.com/users/Admin\@produtor.sampledomain.com/msp/
-		
-		$ export CORE_PEER_LOCALMSPID=ProdutorMSP
-		
-		$ export CORE_PEER_ADDRESS=peer0.produtor.sampledomain.com:7051
+# Preparar Ambiente para a instalação em PEER0
+# Configurando variáveis de Ambiente 
+$ export CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/produtor.sampledomain.com/users/Admin\@produtor.sampledomain.com/msp/
+$ export CORE_PEER_LOCALMSPID=ProdutorMSP
+$ export CORE_PEER_ADDRESS=peer0.produtor.sampledomain.com:7051
 
-		
-		# Antes de instalar, faça uma verificação.
-		$ peer chaincode list --installed
-		# Se as variáreis foram definidas corretamente teremos o seguinte resultado:
-			Get installed chaincodes on peer:
+# Antes de instalar, faça uma verificação.
+$ peer chaincode list --installed
+# Se as variáreis foram definidas corretamente teremos o seguinte resultado:
+#	Get installed chaincodes on peer:
 
+# para instalar, o comando que passaremos será esse:
+$ peer chaincode install \
+	-n chaincode_example02 \
+	-l node \
+	-p ../../../chaincode/chaincode_example02_teste \
+	-v 1.0.0
 
-		# para instalar, o comando que passaremos será esse:
-		$ peer chaincode install \
-				-n chaincode_example02 \
-				-l node \
-				-p ../../../chaincode/chaincode_example02_teste \
-				-v 1.0.0
-
-			# o retorno deve ser parecido com isso
-			Installed remotely response:<status:200 payload:"OK" >
+# o retorno deve ser parecido com isso
+#	Installed remotely response:<status:200 payload:"OK" >
 
 
-		# Para visualizar o chaincode instalado execute o comando:
-		$ peer chaincode list --installed
-		# Se tudo correr bem, o resultado será parecido com esse:
-			Get installed chaincodes on peer:
-			Name: chaincode_example02, Version: 1.0.0, Path: ../../../chaincode/chaincode_example02_teste, Id: 6748193f695db02e265fe58f9cc614dd4b3145e4d2f7a11683111b09c5c45f94
+# Para visualizar o chaincode instalado execute o comando:
+$ peer chaincode list --installed
+# Se tudo correr bem, o resultado será parecido com esse:
+#	Get installed chaincodes on peer:
+#	Name: chaincode_example02, Version: 1.0.0, Path: ../../../chaincode/chaincode_example02_teste, Id: 6748193f695db02e265fe58f9cc614dd4b3145e4d2f7a11683111b09c5c45f94
+
+# Quando instanciamos o chaincode no canal, a política de endosso será definida para exigir endossos de um par em Org1 e Org2. Portanto, também precisamos instalar o chaincode em um par em Org2.
+#===== PEER0 de Transportador =====#
+# Preparar Ambiente para a instalação em PEER0
+# Configurando variáveis de Ambiente 
+$ export CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/transportador.sampledomain.com/users/Admin\@transportador.sampledomain.com/msp/
+$ export CORE_PEER_LOCALMSPID=TransportadorMSP
+$ export CORE_PEER_ADDRESS=peer0.transportador.sampledomain.com:7051
+$ CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/transportador.sampledomain.com/peers/peer0.transportador.sampledomain.com/tls/ca.crt
+
+# Antes de instalar, faça uma verificação.
+$ peer chaincode list --installed
+# Se as variáreis foram definidas corretamente teremos o seguinte resultado:
+#	Get installed chaincodes on peer:
 
 
-	# Quando instanciamos o chaincode no canal, a política de endosso será definida para exigir endossos de um par em Org1 e Org2. Portanto, também precisamos instalar o chaincode em um par em Org2.
-	#===== PEER0 de Transportador =====#
-		# Preparar Ambiente para a instalação em PEER0
-		# Configurando variáveis de Ambiente 
-		$ export CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/transportador.sampledomain.com/users/Admin\@transportador.sampledomain.com/msp/
+# para instalar, o comando que passaremos será esse:
+$ peer chaincode install \
+	-n chaincode_example02 \
+	-l node \
+	-p ../../../chaincode/chaincode_example02_teste \
+	-v 1.0.0
 
-		$ export CORE_PEER_LOCALMSPID=TransportadorMSP
-		
-		$ export CORE_PEER_ADDRESS=peer0.transportador.sampledomain.com:7051
-		
-		$ CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/transportador.sampledomain.com/peers/peer0.transportador.sampledomain.com/tls/ca.crt
+# o retorno deve ser parecido com isso
+#	Installed remotely response:<status:200 payload:"OK" >
 
-		
-		# Antes de instalar, faça uma verificação.
-		$ peer chaincode list --installed
-		# Se as variáreis foram definidas corretamente teremos o seguinte resultado:
-			Get installed chaincodes on peer:
+# Para visualizar o chaincode instalado execute o comando:
+$ peer chaincode list --installed
+# Se tudo correr bem, o resultado será parecido com esse:
+#	Get installed chaincodes on peer:
+#	Name: chaincode_example02, Version: 1.0.0, Path: ../../../chaincode/chaincode_example02_teste, Id: 6748193f695db02e265fe58f9cc614dd4b3145e4d2f7a11683111b09c5c45f94
+~~
 
-
-		# para instalar, o comando que passaremos será esse:
-		$ peer chaincode install \
-				-n chaincode_example02 \
-				-l node \
-				-p ../../../chaincode/chaincode_example02_teste \
-				-v 1.0.0
-
-			# o retorno deve ser parecido com isso
-			Installed remotely response:<status:200 payload:"OK" >
-
-
-		# Para visualizar o chaincode instalado execute o comando:
-		$ peer chaincode list --installed
-		# Se tudo correr bem, o resultado será parecido com esse:
-			Get installed chaincodes on peer:
-			Name: chaincode_example02, Version: 1.0.0, Path: ../../../chaincode/chaincode_example02_teste, Id: 6748193f695db02e265fe58f9cc614dd4b3145e4d2f7a11683111b09c5c45f94
-
-
-		#Obs.: se der problemas, um dos possíveis otivos pode ser a porta 9051
-~~~
 ### PASSO 5: Instanciar o Chaincode - parte 1
 ~~~sh
 	# primeiro: precisamos instalar o chaincode em cada peer que irá executar e endossar nossas transações
