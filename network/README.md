@@ -6,19 +6,20 @@
 Depois de instalar Fabric-Samples e Baixar crypto-config, confgtx e docker-compose
 
 PASSO 1: acesse a pasta "network" e preparando ambiente
-	# Acessando diretório dos arquivos
-	$ cd network
+~~~sh
+# Acessando diretório dos arquivos
+$ cd network
 
-	# Variáveis de ambiente
-	$ export PATH=$GOPATH/src/github.com/hyperledger/fabric/build/bin:${PWD}/../bin:${PWD}:$PATH
-	$ export FABRIC_CFG_PATH=${PWD}
-	$ export CHANNEL_NAME=sampledomain-channel
+# Variáveis de ambiente
+$ export PATH=$GOPATH/src/github.com/hyperledger/fabric/build/bin:${PWD}/../bin:${PWD}:$PATH
+$ export FABRIC_CFG_PATH=${PWD}
+$ export CHANNEL_NAME=sampledomain-channel
 
 
-	# Remove all material pre-exists
-	$ rm -rf crypto-config channel-artifacts
-	$ mkdir crypto-config channel-artifacts
-
+# Remove all material pre-exists
+$ rm -rf crypto-config channel-artifacts
+$ mkdir crypto-config channel-artifacts
+~~~
 
 PASSO 2: gerando material criptográfico dos Participantes
 	# Após a execução do comando será criada a pasta "crypto-config"
