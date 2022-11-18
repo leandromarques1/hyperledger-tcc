@@ -159,41 +159,34 @@ $ peer channel list
 ~~~
 
 
-PASSO 6: Atualizar Anchor Peer no Canal
-	# ver link: https://hyperledger-fabric.readthedocs.io/en/release-1.4/build_network.html#update-the-anchor-peers
+### PASSO 6: Atualizar Anchor Peer no Canal
+ ver link: https://hyperledger-fabric.readthedocs.io/en/release-1.4/build_network.html#update-the-anchor-peers
 
-	#Diferente da etapa de adicionar participantes ao canal, esta etapa precisa ser executada SOMENTE NOS ANCHOR PEER DE CADA ORGANIZAÇÃO, e não em todos os nós da rede
+Diferente da etapa de adicionar participantes ao canal, esta etapa precisa ser executada SOMENTE NOS ANCHOR PEER DE CADA ORGANIZAÇÃO, e não em todos os nós da rede
 
-
-	# Atualize a definição do canal para definir o peer âncora para Produtor como peer0.produtor.sampledomain.com
+~~~sh
+# Atualize a definição do canal para definir o peer âncora para Produtor como peer0.produtor.sampledomain.com
 	
-	#========= PEER0 de Produtor =========#
-		$ CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/produtor.sampledomain.com/users/Admin\@produtor.sampledomain.com/msp/
+#========= PEER0 de Produtor =========#
+$ CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/produtor.sampledomain.com/users/Admin\@produtor.sampledomain.com/msp/
+$ CORE_PEER_ADDRESS=peer0.produtor.sampledomain.com:7051
+$ CORE_PEER_LOCALMSPID=ProdutorMSP
+$ CHANNEL_NAME=sampledomain-channel
 
-		$ CORE_PEER_ADDRESS=peer0.produtor.sampledomain.com:7051
-		
-		$ CORE_PEER_LOCALMSPID=ProdutorMSP
-
-		$ CHANNEL_NAME=sampledomain-channel
-
-		# atualizar Channel
-		$ peer channel update -o orderer.sampledomain.com:7050 -c $CHANNEL_NAME -f ./config/${CORE_PEER_LOCALMSPID}anchors.tx
+# atualizar Channel
+$ peer channel update -o orderer.sampledomain.com:7050 -c $CHANNEL_NAME -f ./config/${CORE_PEER_LOCALMSPID}anchors.tx
 
 
+#========= PEER0 de Transportador =========#
+$ CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/transportador.sampledomain.com/users/Admin\@transportador.sampledomain.com/msp/
+$ CORE_PEER_ADDRESS=peer0.transportador.sampledomain.com:7051
+$ CORE_PEER_LOCALMSPID=TransportadorMSP
+$ CHANNEL_NAME=sampledomain-channel
 
-	#========= PEER0 de Transportador =========#
-		$ CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/transportador.sampledomain.com/users/Admin\@transportador.sampledomain.com/msp/
+# atualizar Channel
+$ peer channel update -o orderer.sampledomain.com:7050 -c $CHANNEL_NAME -f ./config/${CORE_PEER_LOCALMSPID}anchors.tx
 
-		$ CORE_PEER_ADDRESS=peer0.transportador.sampledomain.com:7051
-		
-		$ CORE_PEER_LOCALMSPID=TransportadorMSP
-
-		$ CHANNEL_NAME=sampledomain-channel
-
-		# atualizar Channel
-		$ peer channel update -o orderer.sampledomain.com:7050 -c $CHANNEL_NAME -f ./config/${CORE_PEER_LOCALMSPID}anchors.tx
-
-
+~~~
 
 
 FINALIZAÇÃO: Neste momento todos os comandos relativos à criação e configuração da rede blockchain foram concluídos. O próximo passo é instalar e instanciar o Smart Contract na rede.
