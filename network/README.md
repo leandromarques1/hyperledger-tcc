@@ -43,80 +43,75 @@ $ configtxgen -profile OrgChannel -outputAnchorPeersUpdate ./channel-artifacts/P
 $ configtxgen -profile OrgChannel -outputAnchorPeersUpdate ./channel-artifacts/TransportadorMSPanchors.tx -channelID $CHANNEL_NAME -asOrg TransportadorMSP
 ~~~
 
-PASSO 4: Iniciar Containers
-	# Para e limpa todos os containers existentes
-	$ docker-compose -f docker-compose.yaml down
+### PASSO 4: Iniciar Containers
+~~~sh
+# Para e limpa todos os containers existentes
+$ docker-compose -f docker-compose.yaml down
 
-	# Sobe containers
-	# Antes de continuar será necessário alterar a env FABRIC_CA_SERVER_CA_KEYFILE para a ca.produtor.sampledomain.com e para ca.transportador.sampledomain.com  no docker-compose.yaml
-	# ESQUECE ESSE COMANDO!!!! ls -la crypto-config/peerOrganizations/produtor.sampledomain.com/ca/ | grep _sk
-	$ docker-compose -f docker-compose.yaml up -d
+# Sobe containers
+# Antes de continuar será necessário alterar a env FABRIC_CA_SERVER_CA_KEYFILE para a ca.produtor.sampledomain.com e para ca.transportador.sampledomain.com  no docker-compose.yaml
+# ESQUECE ESSE COMANDO!!!! ls -la crypto-config/peerOrganizations/produtor.sampledomain.com/ca/ | grep _sk
+$ docker-compose -f docker-compose.yaml up -d
 
-	# Testar CouchBD
-	$ curl http://localhost:5984
-	$ curl http://localhost:6984
+# Testar CouchBD
+$ curl http://localhost:5984
+$ curl http://localhost:6984
 
+~~~
 
+### PASSO 5: Criação do Canal: com base nos artefatos gerados anteriormente através da ferramenta configtxgen. 
+~~~sh	
+# Acessando CLI	
+$ docker exec -it cli bash
 
-PASSO 5: Criação do Canal: com base nos artefatos gerados anteriormente através da ferramenta configtxgen. 
-	
-	# Acessando CLI	
-	$ docker exec -it cli bash
+#========= PEER0 de Produtor =========#
+# Variáveis de Ambiente para PEER0
 
-	#========= PEER0 de Produtor =========#
-		# Variáveis de Ambiente para PEER0
+$ CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/produtor.sampledomain.com/users/Admin@produtor.sampledomain.com/msp
+$ CORE_PEER_ADDRESS=peer0.produtor.sampledomain.com:7051
+$ CORE_PEER_LOCALMSPID="ProdutorMSP"
+$ CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/produtor.sampledomain.com/peers/peer0.produtor.sampledomain.com/tls/ca.crt
+$ CHANNEL_NAME=sampledomain-channel
 
-		$ CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/produtor.sampledomain.com/users/Admin@produtor.sampledomain.com/msp
-		
-		$ CORE_PEER_ADDRESS=peer0.produtor.sampledomain.com:7051
-		
-		$ CORE_PEER_LOCALMSPID="ProdutorMSP"
-		
-		$ CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/produtor.sampledomain.com/peers/peer0.produtor.sampledomain.com/tls/ca.crt
-		
-		$ CHANNEL_NAME=sampledomain-channel
+# Create Channel
+$ peer channel create -o orderer.sampledomain.com:7050 -c $CHANNEL_NAME -f ./config/channel.tx
 
-		# Create Channel
-			$ peer channel create -o orderer.sampledomain.com:7050 -c $CHANNEL_NAME -f ./config/channel.tx
-
-		# antes de juntar, verificar o canal criado
-			$ peer channel list
-			# saida esperada
-				Channels peers has joined:
+# antes de juntar, verificar o canal criado
+$ peer channel list
+	# saida esperada
+	# Channels peers has joined:
 
 		
-		# Join "peer0.produtor.sampledomain.com" to the channel
-			$ peer channel join -b $CHANNEL_NAME.block
+# Join "peer0.produtor.sampledomain.com" to the channel
+$ peer channel join -b $CHANNEL_NAME.block
 
 
-		# Verificar o canal criado
-			$ peer channel list
-			# saida esperada
-				sampledomain-channel
+# Verificar o canal criado
+$ peer channel list
+# saida esperada
+#	sampledomain-channel
 
-	#========= PEER1 de Produtor =========#
-		# Variáveis de Ambiente para PEER0
-		
-		$ CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/produtor.sampledomain.com/users/Admin@produtor.sampledomain.com/msp
-		
-		$ CORE_PEER_ADDRESS=peer1.produtor.sampledomain.com:7051
+#========= PEER1 de Produtor =========#
+# Variáveis de Ambiente para PEER0
+$ CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/produtor.sampledomain.com/users/Admin@produtor.sampledomain.com/msp
+$ CORE_PEER_ADDRESS=peer1.produtor.sampledomain.com:7051
 
-		# Canal já foi Criado a partir do PEER0 de "Produtor". Não existe mais necessidade de recriá-lo
+# Canal já foi Criado a partir do PEER0 de "Produtor". Não existe mais necessidade de recriá-lo
 
-		# antes de juntar, verificar o canal criado
-			$ peer channel list
-			# saida esperada
-				Channels peers has joined:
+# antes de juntar, verificar o canal criado
+$ peer channel list
+# saida esperada
+	# Channels peers has joined:
 
-		# Adicionar o peer1 de Produtor ao canal
-			$ peer channel join -b $CHANNEL_NAME.block
+# Adicionar o peer1 de Produtor ao canal
+$ peer channel join -b $CHANNEL_NAME.block
 
-		# Verificar o canal criado
-			$ peer channel list
+# Verificar o canal criado
+$ peer channel list
 
-			# Saida esperada:
-				Channels peers has joined:
-				sampledomain-channel
+# Saida esperada:
+#	Channels peers has joined:
+#	sampledomain-channel
 
 	#========= PEER0 de Transportador =========#
 		# Variáveis de Ambiente para PEER0
