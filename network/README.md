@@ -190,6 +190,6 @@ $ peer channel update -o orderer.sampledomain.com:7050 -c $CHANNEL_NAME -f ./con
 
 
 ### FINALIZAÇÃO
-Neste momento todos os comandos relativos à criação e configuração da rede blockchain foram concluídos. O próximo passo é instalar e instanciar o Smart Contract na rede.
+Neste momento todos os comandos relativos à criação e configuração da rede blockchain foram concluídos. O próximo passo é [instalar e instanciar o Smart Contract na rede] [https://github.com/leandromarques1/hyperledger-tcc/blob/teste_comRede_Produtor_Transportador/chaincode/README.md]
 
 
