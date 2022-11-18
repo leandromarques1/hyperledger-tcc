@@ -315,17 +315,16 @@ $ peer chaincode invoke \
 # ATENÇÃO: observe a relação que ocorre entre "Produtor" e "Transportador"
 
 
-	# Vamos confirmar que nossa invocação anterior foi executada corretamente. Inicializamos a chave a com um valor de 100 e apenas removemos 10 com nossa invocação anterior. Portanto, uma consulta em um deve retornar 90. A sintaxe para consulta é a seguinte:
-	$ peer chaincode query \
-		-C $CHANNEL_NAME \
-		-n chaincode_example02 \
-		-c '{"Args":["query","a"]}'
+# Vamos confirmar que nossa invocação anterior foi executada corretamente. Inicializamos a chave a com um valor de 100 e apenas removemos 10 com nossa invocação anterior. Portanto, uma consulta em um deve retornar 90. A sintaxe para consulta é a seguinte:
+$ peer chaincode query \
+	-C $CHANNEL_NAME \
+	-n chaincode_example02 \
+	-c '{"Args":["query","a"]}'
 
-	# a saida deve ser:
-		Query Result: 90
+# a saida deve ser:
+	Query Result: 90
 
-
-	## ATENÇÃO aos novos containers que foram sendo criados!!!
+## ATENÇÃO aos novos containers que foram sendo criados!!!
 ~~~
 
 ### PASSO 9: Logs
