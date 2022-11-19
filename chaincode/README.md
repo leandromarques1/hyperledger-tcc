@@ -32,8 +32,8 @@ $ touch chaincode_example02.js
 ~~~
 
 ### PASSO 3: criar e editar arquivos
-~~~sh~~~
-#criar arquivo com código do chaincode
+~~~sh
+# criar arquivo com código do chaincode
 $ cat > chaincode_example02.js
 # ao apertar "enter" a partir da linha de baixo já pode escrever.
 # escrever ou colar código do chaincode aqui (verificar em "fabric-samples/chaincode/chaincode_example02/node/chaincode_example02.js")
