@@ -109,11 +109,11 @@
     # ---------------------------------------------------------------------------
     # Vendedor
     # ---------------------------------------------------------------------------
-    #- Name: Vendedor
-    #  Domain: vendedor.sampledomain.com
-    #  EnableNodeOUs: true
-    #  Template:
-    #    Count: 2
-    #  Users:
-    #    Count: 1
+    - Name: Vendedor
+      Domain: vendedor.sampledomain.com
+      EnableNodeOUs: true
+      Template:
+        Count: 2
+      Users:
+        Count: 1
     # ---------------------------------------------------------------------------   
