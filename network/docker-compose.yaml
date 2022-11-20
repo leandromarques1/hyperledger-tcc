@@ -21,9 +21,11 @@ networks:
 
 #Volume: cria uma cópia dos dados que estão no container para a nossa máquina (repositório local)
 volumes:
+  #=== Certificados de Autoridade ===#
   ca.produtor.sampledomain.com:
   ca.transportador.sampledomain.com:
   ca.vendedor.sampledomain.com:
+  #=== Ordenador ===#
   orderer.sampledomain.com:
   #=== Produtor ===#
   peer0.produtor.sampledomain.com:
@@ -380,6 +382,7 @@ services:
     networks:
       - sampleNetwork
 
+  #====== CLI ======#
   cli:                #CLI: container que permite acessar cada nó participante da rede                         
     container_name: cli
     image: hyperledger/fabric-tools
