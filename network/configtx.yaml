@@ -107,23 +107,23 @@ Organizations:
             - Host: peer0.transportador.sampledomain.com
               Port: 7051
 
-    #- &Vendedor
-    #    Name: VendedorMSP
-    #    ID: VendedorMSP
-    #    MSPDir: crypto-config/peerOrganizations/vendedor.sampledomain.com/msp
-    #    Policies:
-    #        Readers:
-    #            Type: Signature
-    #            Rule: "OR('VendedorMSP.admin', 'VendedorMSP.peer', 'VendedorMSP.client')"
-    #        Writers:
-    #            Type: Signature
-    #            Rule: "OR('VendedorMSP.admin', 'VendedorMSP.client')"
-    #        Admins:
-    #            Type: Signature
-    #            Rule: "OR('VendedorMSP.admin')"
-    #    AnchorPeers:
-    #        - Host: peer0.vendedor.sampledomain.com
-    #          Port: 7051
+    - &Vendedor
+        Name: VendedorMSP
+        ID: VendedorMSP
+        MSPDir: crypto-config/peerOrganizations/vendedor.sampledomain.com/msp
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('VendedorMSP.admin', 'VendedorMSP.peer', 'VendedorMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('VendedorMSP.admin', 'VendedorMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('VendedorMSP.admin')"
+        AnchorPeers:
+            - Host: peer0.vendedor.sampledomain.com
+              Port: 7051
 
 ################################################################################
 #
@@ -359,7 +359,7 @@ Profiles:
                 Organizations:
                     - *Produtor
                     - *Transportador
-                    #- *Vendedor
+                    - *Vendedor
     OrgChannel:
         Consortium: SampleConsortium
         <<: *ChannelDefaults
@@ -368,7 +368,7 @@ Profiles:
             Organizations:
                 - *Produtor
                 - *Transportador
-                #- *Vendedor
+                - *Vendedor
             Capabilities:
                 <<: *ApplicationCapabilities
 
@@ -396,7 +396,7 @@ Profiles:
                 Organizations:
                 - *Produtor
                 - *Transportador
-                #- *Vendedor
+                - *Vendedor
 
     SampleMultiNodeEtcdRaft:
         <<: *ChannelDefaults
@@ -428,4 +428,4 @@ Profiles:
                 Organizations:
                 - *Produtor
                 - *Transportador
-                #- *Vendedor
+                - *Vendedor
