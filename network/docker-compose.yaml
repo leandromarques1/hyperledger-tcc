@@ -23,6 +23,7 @@ networks:
 volumes:
   ca.produtor.sampledomain.com:
   ca.transportador.sampledomain.com:
+  ca.vendedor.sampledomain.com:
   orderer.sampledomain.com:
   #=== Produtor ===#
   peer0.produtor.sampledomain.com:
@@ -74,6 +75,23 @@ services:
     command: sh -c 'fabric-ca-server start -b admin:adminpw'
     volumes:
       - ./crypto-config/peerOrganizations/transportador.sampledomain.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    networks:
+      - sampleNetwork
+
+  ca.vendedor.sampledomain.com:
+    container_name: ca.vendedor.sampledomain.com
+    image: hyperledger/fabric-ca
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca.vendedor.sampledomain.com
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.vendedor.sampledomain.com-cert.pem
+      #- FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/42215d11328cb5dcc2054e4b4652a4174de4bb10e77e593d371a8a178da365a0_sk
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/42215d11328cb5dcc2054e4b4652a4174de4bb10e77e593d371a8a178da365a0_sk
+    ports:
+      - "9054:7054"
+    command: sh -c 'fabric-ca-server start -b admin:adminpw'
+    volumes:
+      - ./crypto-config/peerOrganizations/vendedor.sampledomain.com/ca/:/etc/hyperledger/fabric-ca-server-config
     networks:
       - sampleNetwork
 
@@ -339,8 +357,6 @@ services:
       - couchdb.peer1.vendedor.sampledomain.com
     networks:
       - sampleNetwork
-
-  
 
   couchdb.peer0.vendedor.sampledomain.com:
     container_name: couchdb.peer0.vendedor.sampledomain.com
