@@ -18,16 +18,16 @@ $ cd chaincode
 $ ls -l
 $ mkdir chaincode_example02_teste
 $ cd chaincode_example02_teste
-	
+  
 # create a new node project
 $ npm init
-	
+  
 # install fabric-shim at main branch
 # $ npm install fabric-shim@2.4.1
-	
+  
 # or using the released version
 $ npm install fabric-shim
-	
+  
 $ touch chaincode_example02.js
 ~~~
 
@@ -60,12 +60,12 @@ $ cat package.json
 
 ### PASSO 4: instalar Chaincode - parte 1 
 ~~~sh
-# focar em instalar Chaincode para PEER0 de Produtor e Transportador
+# focar em instalar Chaincode para PEER0 de Produtor, Transportador e Vendedor
 
 #voltar para onde o CLI está: "hyperledger/fabric/peer"
 $ cd ../../hyperledger/fabric/peer
 
-	
+  
 #===== PEER0 de Produtor =====#
 # Preparar Ambiente para a instalação em PEER0
 # Configurando variáveis de Ambiente 
@@ -76,24 +76,24 @@ $ export CORE_PEER_ADDRESS=peer0.produtor.sampledomain.com:7051
 # Antes de instalar, faça uma verificação.
 $ peer chaincode list --installed
 # Se as variáreis foram definidas corretamente teremos o seguinte resultado:
-#	Get installed chaincodes on peer:
+# Get installed chaincodes on peer:
 
 # para instalar, o comando que passaremos será esse:
 $ peer chaincode install \
-	-n chaincode_example02 \
-	-l node \
-	-p ../../../chaincode/chaincode_example02_teste \
-	-v 1.0.0
+  -n chaincode_example02 \
+  -l node \
+  -p ../../../chaincode/chaincode_example02_teste \
+  -v 1.0.0
 
 # o retorno deve ser parecido com isso
-#	Installed remotely response:<status:200 payload:"OK" >
+# Installed remotely response:<status:200 payload:"OK" >
 
 
 # Para visualizar o chaincode instalado execute o comando:
 $ peer chaincode list --installed
 # Se tudo correr bem, o resultado será parecido com esse:
-#	Get installed chaincodes on peer:
-#	Name: chaincode_example02, Version: 1.0.0, Path: ../../../chaincode/chaincode_example02_teste, Id: 6748193f695db02e265fe58f9cc614dd4b3145e4d2f7a11683111b09c5c45f94
+# Get installed chaincodes on peer:
+# Name: chaincode_example02, Version: 1.0.0, Path: ../../../chaincode/chaincode_example02_teste, Id: 6748193f695db02e265fe58f9cc614dd4b3145e4d2f7a11683111b09c5c45f94
 
 # Quando instanciamos o chaincode no canal, a política de endosso será definida para exigir endossos de um par em Org1 e Org2. Portanto, também precisamos instalar o chaincode em um par em Org2.
 #===== PEER0 de Transportador =====#
@@ -107,24 +107,56 @@ $ CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer
 # Antes de instalar, faça uma verificação.
 $ peer chaincode list --installed
 # Se as variáreis foram definidas corretamente teremos o seguinte resultado:
-#	Get installed chaincodes on peer:
+# Get installed chaincodes on peer:
 
 
 # para instalar, o comando que passaremos será esse:
 $ peer chaincode install \
-	-n chaincode_example02 \
-	-l node \
-	-p ../../../chaincode/chaincode_example02_teste \
-	-v 1.0.0
+  -n chaincode_example02 \
+  -l node \
+  -p ../../../chaincode/chaincode_example02_teste \
+  -v 1.0.0
 
 # o retorno deve ser parecido com isso
-#	Installed remotely response:<status:200 payload:"OK" >
+# Installed remotely response:<status:200 payload:"OK" >
 
 # Para visualizar o chaincode instalado execute o comando:
 $ peer chaincode list --installed
 # Se tudo correr bem, o resultado será parecido com esse:
-#	Get installed chaincodes on peer:
-#	Name: chaincode_example02, Version: 1.0.0, Path: ../../../chaincode/chaincode_example02_teste, Id: 6748193f695db02e265fe58f9cc614dd4b3145e4d2f7a11683111b09c5c45f94
+# Get installed chaincodes on peer:
+# Name: chaincode_example02, Version: 1.0.0, Path: ../../../chaincode/chaincode_example02_teste, Id: 6748193f695db02e265fe58f9cc614dd4b3145e4d2f7a11683111b09c5c45f94
+
+#===== PEER0 de Vendedor =====#
+# Preparar Ambiente para a instalação em PEER0
+# Configurando variáveis de Ambiente 
+$ export CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/vendedor.sampledomain.com/users/Admin\@vendedor.sampledomain.com/msp/
+$ export CORE_PEER_LOCALMSPID=VendedorMSP
+$ export CORE_PEER_ADDRESS=peer0.vendedor.sampledomain.com:7051
+$ CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/vendedor.sampledomain.com/peers/peer0.vendedor.sampledomain.com/tls/ca.crt
+
+# Antes de instalar, faça uma verificação.
+$ peer chaincode list --installed
+# Se as variáreis foram definidas corretamente teremos o seguinte resultado:
+# Get installed chaincodes on peer:
+
+# para instalar, o comando que passaremos será esse:
+$ peer chaincode install \
+  -n chaincode_example02 \
+  -l node \
+  -p ../../../chaincode/chaincode_example02_teste \
+  -v 1.0.0
+
+# o retorno deve ser parecido com isso
+# Installed remotely response:<status:200 payload:"OK" >
+
+# Para visualizar o chaincode instalado execute o comando:
+$ peer chaincode list --installed
+# Se tudo correr bem, o resultado será parecido com esse:
+# Get installed chaincodes on peer:
+# Name: chaincode_example02, Version: 1.0.0, Path: ../../../chaincode/chaincode_example02_teste, Id: 6748193f695db02e265fe58f9cc614dd4b3145e4d2f7a11683111b09c5c45f94
+
+
+
 ~~~
 
 ### PASSO 5: Instanciar o Chaincode - parte 1
@@ -144,24 +176,24 @@ $ export CHANNEL_NAME=sampledomain-channel
 # Antes de instalar, faça uma verificação.
 $ peer chaincode list --instantiated -C $CHANNEL_NAME
 # Se as variáreis foram definidas corretamente teremos o seguinte resultado:
-#	Get instantiated chaincodes on channel sampledomain-channel:
+# Get instantiated chaincodes on channel sampledomain-channel:
 
 $ peer chaincode instantiate \
-	-o orderer.sampledomain.com:7050 \
-	-C $CHANNEL_NAME \
-	-n chaincode_example02 \
-	-l node \
-	-v 1.0.0 \
-	-c '{"Args":["init","a", "100", "b","200"]}' \
-	-P "AND ('ProdutorMSP.peer','TransportadorMSP.peer')"
+  -o orderer.sampledomain.com:7050 \
+  -C $CHANNEL_NAME \
+  -n chaincode_example02 \
+  -l node \
+  -v 1.0.0 \
+  -c '{"Args":["init","a", "100", "b","200"]}' \
+  -P "AND ('ProdutorMSP.peer','TransportadorMSP.peer','VendedorMSP.peer')"
 
 # Para confirmar a Instanciação no nosso Canal
 $ peer chaincode list --instantiated -C $CHANNEL_NAME
 # Se as variáreis foram definidas corretamente teremos o seguinte resultado:
-#	Get instantiated chaincodes on channel sampledomain-channel:
-#	Name: chaincode_example02, Version: 1.0.0, Path: ../../../chaincode/chaincode_example02_teste, Escc: escc, Vscc: vscc
+# Get instantiated chaincodes on channel sampledomain-channel:
+# Name: chaincode_example02, Version: 1.0.0, Path: ../../../chaincode/chaincode_example02_teste, Escc: escc, Vscc: vscc
 
-~~~	
+~~~ 
 
 O chaincode é então “instanciado” no $CHANNEL_NAME. A instanciação adiciona o chaincode ao canal, inicia o contêiner para o peer de destino e inicializa os pares de valores-chave associados ao chaincode. Os valores iniciais para este exemplo são [“a”,”100” “b”,”200”]. Essa “instanciação” resulta em um CONTAINER com o nome "dev-peer0.produtor.sampledomain.com-chaincode_example02-1.0.0" iniciando.
 IMPORTANTE: esse deve ser o processo de DEPLOY do SMART CONTRACT !!!!
@@ -176,45 +208,48 @@ $ docker logs dev-peer0.produtor.sampledomain.com-chaincode_example02-1.0.0
 ><br> node chaincode_example02.js "--peer.address" "peer0.produtor.sampledomain.com:7052"
 
 ><br> 2022-11-15T18:59:55.159Z info [shim:lib/chaincode.js]                             Registering with peer peer0.produtor.sampledomain.com:7052 as chaincode "chaincode_example02:1.0.0"
-><br> 2022-11-15T18:59:55.224Z info [shim:lib/handler.js]                               Successfully registered with peer node. State transferred to "established"			
+><br> 2022-11-15T18:59:55.224Z info [shim:lib/handler.js]                               Successfully registered with peer node. State transferred to "established"      
 ><br> 2022-11-15T18:59:55.226Z info [shim:lib/handler.js]                               Successfully established communication with peer node. State transferred to "ready"
 ><br>========= example02 Init =========
 ><br>{ fcn: 'init', params: [ 'a', '100', 'b', '200' ] }
-					
+          
 ><br>2022-11-15T18:59:55.267Z info [shim:lib/handler.js]                               [sampledomain-channel-bf535583] Calling chaincode Init() succeeded. Sending COMPLETED message back to peer
 
 ><br># esse é o tão famoso DEPLOY do SmartContract!!! 
-><br>	--> será???
+><br> --> será???
 
 
 ### PASSO 6: Verificar métodos do Chaincode
 ~~~sh
 # Vamos consultar o valor de a para ter certeza de que o chaincode foi instanciado corretamente e o banco de dados de estado foi preenchido.
 $ peer chaincode query \
-	-C $CHANNEL_NAME \
-	-n chaincode_example02 \
-	-c '{"Args":["query","a"]}'
+  -C $CHANNEL_NAME \
+  -n chaincode_example02 \
+  -c '{"Args":["query","a"]}'
 
 # Agora vamos mover 10 de "a" para "b". Esta transação cortará um novo bloco e atualizará o banco de dados de estado. A sintaxe para invocar é a seguinte:
 $ peer chaincode invoke \
-	-o orderer.sampledomain.com:7050 \
-	-C $CHANNEL_NAME \
-	-n chaincode_example02 \
-	--peerAddresses peer0.produtor.sampledomain.com:7051 \
-	--peerAddresses peer0.transportador.sampledomain.com:7051 \
-	-c '{"Args":["invoke","a","b","10"]}'
+  -o orderer.sampledomain.com:7050 \
+  -C $CHANNEL_NAME \
+  -n chaincode_example02 \
+  --peerAddresses peer0.produtor.sampledomain.com:7051 \
+  --peerAddresses peer0.transportador.sampledomain.com:7051 \
+  --peerAddresses peer0.vendedor.sampledomain.com:7051 \
+  -c '{"Args":["invoke","a","b","10"]}'
+
+  #sempre que for instanciado com "AND" necessita colocar esse "--peerAddresses"
 ~~~
 > DICA: olhar o "log" do container criado lá no Docker Desktop
-	--> olhar o "console.info"
+  --> olhar o "console.info"
 ~~~sh
 # Vamos confirmar que nossa invocação anterior foi executada corretamente. Inicializamos a chave a com um valor de 100 e apenas removemos 10 com nossa invocação anterior. Portanto, uma consulta em um deve retornar 90. A sintaxe para consulta é a seguinte:
 $ peer chaincode query \
-	-C $CHANNEL_NAME \
-	-n chaincode_example02 \
-	-c '{"Args":["query","a"]}'
+  -C $CHANNEL_NAME \
+  -n chaincode_example02 \
+  -c '{"Args":["query","a"]}'
 
 # a saida deve ser:
-#	Query Result: 90
+# Query Result: 90
 
 
 ## ATENÇÃO aos novos containers que foram sendo criados!!!
@@ -241,21 +276,21 @@ $ export CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabr
 # Antes de instalar, faça uma verificação.
 $ peer chaincode list --installed
 # Se as variáreis foram definidas corretamente teremos o seguinte resultado:
-#	Get installed chaincodes on peer:
+# Get installed chaincodes on peer:
 
 # para instalar, o comando que passaremos será esse:
 $ peer chaincode install \
-	-n chaincode_example02 \
-	-l node \
-	-p ../../../chaincode/chaincode_example02_teste \
-	-v 1.0.0
+  -n chaincode_example02 \
+  -l node \
+  -p ../../../chaincode/chaincode_example02_teste \
+  -v 1.0.0
 # o retorno deve ser parecido com isso
-#	Installed remotely response:<status:200 payload:"OK" >
+# Installed remotely response:<status:200 payload:"OK" >
 
 # Para visualizar o chaincode instalado execute o comando:
 $ peer chaincode list --installed
 # Se tudo correr bem, o resultado será parecido com esse:
-#	Name: chaincode_example02, Version: 1.0.0, Path: ../../../chaincode/chaincode_example02_teste, Id: 6748193f695db02e265fe58f9cc614dd4b3145e4d2f7a11683111b09c5c45f94
+# Name: chaincode_example02, Version: 1.0.0, Path: ../../../chaincode/chaincode_example02_teste, Id: 6748193f695db02e265fe58f9cc614dd4b3145e4d2f7a11683111b09c5c45f94
 
 # Peer1 de Produtor deixa em stand-by no momento
 #===== PEER1 de Produtor =====#
@@ -269,23 +304,23 @@ $ export CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabr
 # Antes de instalar, faça uma verificação.
 $ peer chaincode list --installed
 # Se as variáreis foram definidas corretamente teremos o seguinte resultado:
-#	Get installed chaincodes on peer:
+# Get installed chaincodes on peer:
 
 # para instalar, o comando que passaremos será esse:
 $ peer chaincode install \
-	-n chaincode_example02 \
-	-l node \
-	-p ../../../chaincode/chaincode_example02_teste \
-	-v 1.0.0
+  -n chaincode_example02 \
+  -l node \
+  -p ../../../chaincode/chaincode_example02_teste \
+  -v 1.0.0
 
 # o retorno deve ser parecido com isso
-#	Installed remotely response:<status:200 payload:"OK" >
+# Installed remotely response:<status:200 payload:"OK" >
 
 # Para visualizar o chaincode instalado execute o comando:
 $ peer chaincode list --installed
  Se tudo correr bem, o resultado será parecido com esse:
-#	Get installed chaincodes on peer:
-#	Name: deal, Version: 1.0, Path: github.com/sacc, Id: cd57c948631f3241d19204c3502f2e779ed2a3e1e33e40a9592cf452f9c31a9a
+# Get installed chaincodes on peer:
+# Name: deal, Version: 1.0, Path: github.com/sacc, Id: cd57c948631f3241d19204c3502f2e779ed2a3e1e33e40a9592cf452f9c31a9a
 ~~~
 
 ### PASSO 8: Verificar métodos do Chaincode - parte 2
@@ -298,18 +333,18 @@ $ export CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabr
 # Após o retorno do comando join, a "consulta" pode ser emitida. A sintaxe para "consulta" é a seguinte.
 # Vamos consultar o valor de a para ter certeza de que o chaincode foi instanciado corretamente e o banco de dados de estado foi preenchido.
 $ peer chaincode query \
-	-C $CHANNEL_NAME \
-	-n chaincode_example02 \
-	-c '{"Args":["query","a"]}'
+  -C $CHANNEL_NAME \
+  -n chaincode_example02 \
+  -c '{"Args":["query","a"]}'
 
 # Agora vamos mover 10 de "a" para "b". Esta transação cortará um novo bloco e atualizará o banco de dados de estado. A sintaxe para invocar é a seguinte:
 $ peer chaincode invoke \
-	-o orderer.sampledomain.com:7050 \
-	-C $CHANNEL_NAME \
-	-n chaincode_example02 \
-	--peerAddresses peer0.produtor.sampledomain.com:7051 \
-	--peerAddresses peer0.transportador.sampledomain.com:7051 \
-	-c '{"Args":["invoke","a","b","10"]}'
+  -o orderer.sampledomain.com:7050 \
+  -C $CHANNEL_NAME \
+  -n chaincode_example02 \
+  --peerAddresses peer0.produtor.sampledomain.com:7051 \
+  --peerAddresses peer0.transportador.sampledomain.com:7051 \
+  -c '{"Args":["invoke","a","b","10"]}'
 
 
 # ATENÇÃO: observe a relação que ocorre entre "Produtor" e "Transportador"
@@ -317,12 +352,12 @@ $ peer chaincode invoke \
 
 # Vamos confirmar que nossa invocação anterior foi executada corretamente. Inicializamos a chave a com um valor de 100 e apenas removemos 10 com nossa invocação anterior. Portanto, uma consulta em um deve retornar 90. A sintaxe para consulta é a seguinte:
 $ peer chaincode query \
-	-C $CHANNEL_NAME \
-	-n chaincode_example02 \
-	-c '{"Args":["query","a"]}'
+  -C $CHANNEL_NAME \
+  -n chaincode_example02 \
+  -c '{"Args":["query","a"]}'
 
 # a saida deve ser:
-	Query Result: 90
+  Query Result: 90
 
 ## ATENÇÃO aos novos containers que foram sendo criados!!!
 ~~~
@@ -336,12 +371,12 @@ $ docker logs -f cli
 
 #possivelmente, a saida será parecida com essa:
 ~~~
-><br>	2017-05-16 17:08:01.366 UTC [msp] GetLocalMSP -> DEBU 004 Returning existing local MSP
-><br>	2017-05-16 17:08:01.366 UTC [msp] GetDefaultSigningIdentity -> DEBU 005 Obtaining default signing identity
-><br>	2017-05-16 17:08:01.366 UTC [msp/identity] Sign -> DEBU 006 Sign: plaintext: 0AB1070A6708031A0C08F1E3ECC80510...6D7963631A0A0A0571756572790A0161
-><br>	2017-05-16 17:08:01.367 UTC [msp/identity] Sign -> DEBU 007 Sign: digest: E61DB37F4E8B0D32C9FE10E3936BA9B8CD278FAA1F3320B08712164248285C54
-><br>	Query Result: 90
-><br>	2017-05-16 17:08:15.158 UTC [main] main -> INFO 008 Exiting.....
+><br> 2017-05-16 17:08:01.366 UTC [msp] GetLocalMSP -> DEBU 004 Returning existing local MSP
+><br> 2017-05-16 17:08:01.366 UTC [msp] GetDefaultSigningIdentity -> DEBU 005 Obtaining default signing identity
+><br> 2017-05-16 17:08:01.366 UTC [msp/identity] Sign -> DEBU 006 Sign: plaintext: 0AB1070A6708031A0C08F1E3ECC80510...6D7963631A0A0A0571756572790A0161
+><br> 2017-05-16 17:08:01.367 UTC [msp/identity] Sign -> DEBU 007 Sign: digest: E61DB37F4E8B0D32C9FE10E3936BA9B8CD278FAA1F3320B08712164248285C54
+><br> Query Result: 90
+><br> 2017-05-16 17:08:15.158 UTC [main] main -> INFO 008 Exiting.....
 
 
 ~~~sh
@@ -350,26 +385,26 @@ $ docker logs -f cli
 
 $ docker logs dev-peer0.transportador.sampledomain.com-chaincode_example02-1.0.0
 ~~~
-><br>	04:30:45.947 [BCCSP_FACTORY] DEBU : Initialize BCCSP [SW]
-><br>	ex02 Init
-><br>	Aval = 100, Bval = 200
+><br> 04:30:45.947 [BCCSP_FACTORY] DEBU : Initialize BCCSP [SW]
+><br> ex02 Init
+><br> Aval = 100, Bval = 200
 
 ~~~sh
 $ docker logs dev-peer0.produtor.sampledomain.com-chaincode_example02-1.0.0
-~~~	
->	04:31:10.569 [BCCSP_FACTORY] DEBU : Initialize BCCSP [SW]
-><br>	ex02 Invoke
-><br>	Query Response:{"Name":"a","Amount":"100"}
-><br>	ex02 Invoke
-><br>	Aval = 90, Bval = 210
+~~~ 
+> 04:31:10.569 [BCCSP_FACTORY] DEBU : Initialize BCCSP [SW]
+><br> ex02 Invoke
+><br> Query Response:{"Name":"a","Amount":"100"}
+><br> ex02 Invoke
+><br> Aval = 90, Bval = 210
 
 
 ~~~sh
 $ docker logs dev-peer1.transportador.sampledomain.com-chaincode_example02-1.0.0
 ~~~
-><br>	04:31:30.420 [BCCSP_FACTORY] DEBU : Initialize BCCSP [SW]
-><br>	ex02 Invoke
-><br>	Query Response:{"Name":"a","Amount":"90"}
+><br> 04:31:30.420 [BCCSP_FACTORY] DEBU : Initialize BCCSP [SW]
+><br> ex02 Invoke
+><br> Query Response:{"Name":"a","Amount":"90"}
 
 
 
@@ -381,7 +416,7 @@ Para uma informação mais gráfica e bonita, veja o Docker Desktop
 
 ### IMPORTANTE
 um resumo de tudo isso
-	https://hyperledger-fabric.readthedocs.io/en/release-1.4/build_network.html#what-s-happening-behind-the-scenes
+  https://hyperledger-fabric.readthedocs.io/en/release-1.4/build_network.html#what-s-happening-behind-the-scenes
 
 
 
