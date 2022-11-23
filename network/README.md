@@ -22,7 +22,7 @@ $ mkdir crypto-config channel-artifacts
 ~~~
 
 ### PASSO 2: gerando material criptográfico dos Participantes
-Objetivo é gerar os certificados digitais x.509 e as chaves de assinatura para todos os participantes da rede.
+Objetivo é gerar os certificados digitais x.509 e as chaves de assinatura para todos os participantes da rede. Isso será importante para conseguirmos as permissões para cada agente estar na rede.
 ~~~sh
 # Após a execução do comando será criada a pasta "crypto-config"
 $ cryptogen generate --config=./crypto-config.yaml
