@@ -173,10 +173,10 @@ let Chaincode = class{
 
         //"getState": busca a ultima informação (o ultimo registro)
         const productAsByte = await stub.getState(product_ID); //nessa função NÃO dá pra retornar todo seu histórico
-        //const product = JSON.parse(productAsByte.toString());
+        const product = JSON.parse(productAsByte.toString());
         console.info('=======================================');
-        //console.log(product);
-        console.log(productAsByte.toString());
+        console.log(product);  //melhor para ler na Vertical
+        //console.log(productAsByte.toString()); //melhor para ler na Horizontal
         console.info('=======================================');
         //return product;
         return productAsByte;
@@ -213,7 +213,7 @@ let Chaincode = class{
         let nodeName = args[1];
         let productName = args[2];
         let CNPJ = args[3];
-        console.info('- start transfeProduct ');
+        console.info('- Start transferProduct ');
 
         //Passo 3: verificar se Produto já existe dentro da Rede
         const exists = await stub.getState(product_ID);
@@ -268,7 +268,7 @@ let Chaincode = class{
                 //registrar informação criada dentro da rede (no LEDGER)
                 await stub.putState(product_ID, buffer); //"stub": representação do Blockchain dentro do Código
                 
-                console.info('- end transferProduct (success)');
+                console.info('- End transferProduct (success)');
             }
 
             else
@@ -327,12 +327,11 @@ let Chaincode = class{
 
                 //registrar informação criada dentro da rede (no LEDGER)
                 await stub.putState(product_ID, buffer); //"stub": representação do Blockchain dentro do Código
-                console.info('- end transferProduct (success)');
+                console.info('- End transferProduct (success)');
             }
              
         }          
         
-        /* Por enquanto "Vendedor" não entra
         //se for o nó "Vendedor"
         else if (nodeName=="vendedor")
         {
@@ -381,10 +380,10 @@ let Chaincode = class{
                 //registrar informação criada dentro da rede (no LEDGER)
                 await stub.putState(product_ID, buffer); //"stub": representação do Blockchain dentro do Código
                 
-                console.info('- end transferProduct (success)');
+                console.info('- End transferProduct (success)');
             }
             
-        }*/
+        }
         else
         {    //se não for "Produtor", não pode criar produto
             throw new Error(`The product can't be transfer by ${nodeName}`);
@@ -433,19 +432,24 @@ let Chaincode = class{
 
             await stub.deleteState(product_ID);
         }
-        /* Por enquanto "Vendedor" não entra no código
+
         else if (nodeName == "vendedor")
         {
-            //"Vendedor" só pode deletar o produto se já tiver chegado na etapa dele
-            if(produto["CNPJ_Vendedor"] == null)
+            //"Vendedor" pode deletar o produto, desde que já tenha passado pelas etapas de "Produtor" e "Transportador"
+            if(produto["CNPJ_Produtor"] != null && produto["CNPJ_Transportador"] != null)
             {
-                //Significa que produto já foi para as etapas de "Transportador" ou "Vendedor"
-                throw new Error(`The product ${product_ID} can't be deleted`);
+                //"Vendedor" só pode deletar o produto se já tiver chegado na etapa dele
+                if(produto["CNPJ_Vendedor"] == null)
+                {
+                    //Significa que produto já foi para as etapas de "Transportador" ou "Vendedor"
+                    throw new Error(`The product ${product_ID} can't be deleted`);
+                }
+                //"Produtor" pode deletar o produto
+                await stub.deleteState(product_ID);
+                //print(`The product has been selled!`)    
             }
-            //"Produtor" pode deletar o produto
-            await stub.deleteState(product_ID);
-            //print(`The product has been selled!`)
-        }*/
+            
+        }
         else
         {    //se não for "Produtor", não pode criar produto
             throw new Error(`The product can't be delete by ${nodeName}`);
@@ -457,6 +461,7 @@ let Chaincode = class{
     // método p/ retorna todos os lotes de informação encontrados no estado mundial
     async queryAll(stub) {
         let allResults = [];
+        // consulta de intervalo com string vazia para startKey e endKey faz uma consulta aberta de todos os ativos no namespace chaincode
         const iterator = await stub.getStateByRange('', '');
         while (true) {
             const res = await iterator.next();
@@ -475,10 +480,11 @@ let Chaincode = class{
                 allResults.push({ Key, Record });
             }
             if (res.done) {
-                console.log('end of data');
                 await iterator.close();
                 console.info(allResults);
-                return JSON.stringify(allResults);
+                console.log('end of data');
+                //return JSON.stringify(allResults);
+                return allResults.toString()
             }
         }
     }
@@ -494,9 +500,9 @@ let Chaincode = class{
     //Foram usadas duas formas para acessar esse Ledger. As duas são mostradas a seguir
     //  --> por enquanto, deixar as duas, existem coisas mais urgentes para fazer daqui pra frente
 
-    // acessar o histórico de Transações
-    // retrieveHistory - 1ª Forma
-    /*async retrieveHistory(stub, args, thisClass) {
+    // acessar o histórico de Transações   
+    // 3ª Forma
+    async retrieveHistory(stub, args) {
         if (args.length < 1) {
             throw new Error('Incorrect number of arguments. Expecting 1')
         }
@@ -504,79 +510,44 @@ let Chaincode = class{
         let product_ID = args[0];
         console.info('getting history for product_ID: ' + product_ID);
         
-        
-        let iterator = await stub.getHistoryForKey(product_ID);
-        let result = [];
-        let res = await iterator.next();
-        while (!res.done) 
-        {
-            if (res.value) 
-            {
-                console.info(`found state update with value: ${res.value.value.toString('utf8')}`);
-                const obj = JSON.parse(res.value.value.toString('utf8'));
-                result.push(obj);
-            }
-            res = await iterator.next();
-        }
-        await iterator.close();
-        return result;
-        
-    }*/
-
-    async getAllResults(iterator, isHistory) {
         let allResults = [];
+        let iterator = await stub.getHistoryForKey(product_ID);
         while (true) {
             let res = await iterator.next();
-
             if (res.value && res.value.value.toString()) {
                 let jsonRes = {};
-                console.log(res.value.value.toString('utf8'));
-
-                if (isHistory && isHistory === true) {
-                    jsonRes.TxId = res.value.tx_id;
-                    jsonRes.Timestamp = res.value.timestamp;
-                    jsonRes.IsDelete = res.value.is_delete.toString();
-                    try {
-                        jsonRes.Value = JSON.parse(res.value.value.toString('utf8'));
-                    } catch (err) {
-                        console.log(err);
-                        jsonRes.Value = res.value.value.toString('utf8');
-                    }
-                } else {
-                    jsonRes.Key = res.value.key;
-                    try {
-                        jsonRes.Record = JSON.parse(res.value.value.toString('utf8'));
-                    } catch (err) {
-                        console.log(err);
-                        jsonRes.Record = res.value.value.toString('utf8');
-                    }
+                //console.log(res.value.value.toString('utf8'));
+                jsonRes.TxId = res.value.tx_id;
+                jsonRes.Timestamp = res.value.timestamp;
+                jsonRes.IsDelete = res.value.is_delete.toString();
+                try {
+                    jsonRes.Value = JSON.parse(res.value.value.toString('utf8'));
+                } catch (err) {
+                    console.log(err);
+                    jsonRes.Value = res.value.value.toString('utf8');
                 }
+
+                //jsonRes.Key = res.value.key;
+                /*try {
+                    jsonRes.Record = JSON.parse(res.value.value.toString('utf8'));
+                } catch (err) {
+                    console.log(err);
+                    jsonRes.Record = res.value.value.toString('utf8');
+                }*/
+
                 allResults.push(jsonRes);
             }
             if (res.done) {
-                console.log('end of data');
                 await iterator.close();
                 console.info(allResults);
-                return allResults;
+                console.log('end of data');
+                return allResults.toString();
             }
         }
+
+       
+        
     }
-
-    async getHistoryForProductID(stub, args, thisClass) {
-        if (args.length < 1) {
-          throw new Error('Incorrect number of arguments. Expecting 1')
-        }
-        let product_ID = args[0];
-        console.info('- start getHistoryForProductID: %s\n', product_ID);
-
-        let resultsIterator = await stub.getHistoryForKey(product_ID);
-        let method = thisClass['getAllResults'];
-        let results = await method(resultsIterator, true);
-
-        return Buffer.from(JSON.stringify(results));
-    }
-
-    
 
 } 
 
